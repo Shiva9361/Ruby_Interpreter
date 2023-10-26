@@ -138,6 +138,7 @@ public class Scanner {
                 break;
             
             // Ignoring all kinds of white spaces
+            // Come back to this when you need to change
             case ' ':
             case '\r':
             case '\t':
@@ -157,6 +158,7 @@ public class Scanner {
             default:
                 if (isAlpha(c)){
                     identifier();
+                    break;
                 }
                 Ruby.error(line, "Unexpected Character");
                 break;
