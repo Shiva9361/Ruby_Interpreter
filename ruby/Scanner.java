@@ -83,7 +83,7 @@ public class Scanner {
     }
     
 
-
+    //Recognizing Lexemes
     private void scanToken(){
         char c = advance();
         
