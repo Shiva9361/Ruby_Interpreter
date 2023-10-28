@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 /*
  * Automating the creation of the Expr class   
+ * Read the Visitor method to understand
  */
 public class GenerateAst {
     public static void main(String[] args) throws IOException{
