@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static ruby.TokenType.*;
+
 public class Scanner {
 
     private static final Map<String,TokenType> keywords; 
@@ -12,6 +13,7 @@ public class Scanner {
      * Creating a map for all keywods found in ruby
      * If a keyword is encountered, It is added to the token 
      * instead of setting as identifier
+     * Helper Functions from line 189
      */
     static{
         keywords = new HashMap<>();
@@ -57,6 +59,7 @@ public class Scanner {
         //keywords.put("yield");
 
     }
+
     /*
      * We don't want to ever change the source during execution
      * Also we don't want to create a new token list
@@ -68,6 +71,8 @@ public class Scanner {
     private int start =0;
     private int current =0;
     private int line = 1;
+
+    //Parameterized constructor
     Scanner(String source){
         this.source=source;
     }
@@ -78,6 +83,7 @@ public class Scanner {
             start = current;
             scanToken();
         }
+        //adding EOF to the arraylist of tokens by creating a new Token object 
         tokens.add(new Token(EOF,"",null,line));
         return tokens;
     }
@@ -97,6 +103,8 @@ public class Scanner {
             
             case ',': addToken(COMMA); break;
             case '.': addToken(DOT); break;
+
+            //we need to look at the second character.
             case '-': addToken(match('=') ? MINUS_EQUAL : MINUS); break;
             case '+': addToken(match('=') ? PLUS_EQUAL : PLUS); break;
             case ';': addToken(SEMICOLON); break;
@@ -144,6 +152,7 @@ public class Scanner {
                     addToken(SLASH);
                 }
                 break;
+
             // comment in ruby is by #
             case '#':
                 while(peek()!='\n' && !isAtEnd()) advance();
@@ -168,7 +177,9 @@ public class Scanner {
                 break;
             //String 
             case '"': string(); break;
-            
+
+            /*a reserved word is an identifier, it’s just one that has been claimed by
+             the language for its own use. That’s where the term reserved word comes from.*/
             default:
                 if (isAlpha(c)){
                     identifier();
@@ -188,6 +199,7 @@ public class Scanner {
          return current >=source.length();
     }
 
+    //consumes the next character in the source file and returns it
     private char advance() {
         current++;
         return source.charAt(current - 1);
@@ -212,7 +224,9 @@ public class Scanner {
         current++;
         return true;
     }
+
     // Dosen't increment current 
+    //Like Look Ahead
     private char peek(){
         if(isAtEnd()) return '\0';
         return source.charAt(current);
@@ -230,6 +244,7 @@ public class Scanner {
             Ruby.error(line,"Unterminated String");
             return;
         }
+        
         // This is for the closing "
         advance();
 
@@ -266,6 +281,8 @@ public class Scanner {
         }
         
     }
+
+    //after we scan an identifier, we check to see if it matches anything in the map
     private void identifier(){
         while(isAlphanumeric(peek())) advance();
         String text = source.substring(start, current);

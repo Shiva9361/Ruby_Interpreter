@@ -1,12 +1,15 @@
 package ruby;
 
+//An enum type is a special data type that enables for a variable to be a set of predefined constants.
 enum TokenType{
+
     // Single char tokens
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,LEFT_SQUARE, RIGHT_SQUARE,
     COMMA, SEMICOLON, COLON,COLON_COLON,QUESTION_MARK,
     BACKSLASH,ARROW_OP,FAT_ARROW_OP,DOT, 
     
     ELLIPSES,// ahhh should check // argumnet forwarding havent't added token for this
+    
     // general arithmetic ops
     MINUS, PLUS, SLASH, STAR,MOD,
     
