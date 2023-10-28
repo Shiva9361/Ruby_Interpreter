@@ -53,6 +53,7 @@ public class Scanner {
         keywords.put("when",WHEN);
         keywords.put("while",WHILE);
         keywords.put("print",PRINT);
+        keywords.put("puts",PUTS);
         //keywords.put("yield");
 
     }
