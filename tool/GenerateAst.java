@@ -8,12 +8,17 @@ import java.util.List;
  * Automating the creation of the Expr class   
  * Read the Visitor method to understand
  */
+
+
 public class GenerateAst {
     public static void main(String[] args) throws IOException{
         if (args.length!=1){
             System.err.println("Usage: generate_ast <Output directory>");
             System.exit(64);
         }
+
+        //To generate the classes, it needs to have some description of each type and its fields.
+        //Doubt here
         String outputDir = args[0];
         defineAst(outputDir,"Expr",Arrays.asList(
                 "Binary     : Expr left, Token operator, Expr right",
@@ -22,6 +27,7 @@ public class GenerateAst {
                      "Unary      : Token operator, Expr right"
         ));
     }
+
     private static void defineAst(String outputDir,String baseName,List<String> types) throws IOException{
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
@@ -74,6 +80,7 @@ public class GenerateAst {
         writer.println("\t}"); 
     }
     
+    //That function generates the visitor interface.
     private static void defineVisitor(PrintWriter writer,String baseName,List<String> types){
         writer.println("\tinterface Visitor<R> {");
         for (String type: types){
