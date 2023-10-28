@@ -26,6 +26,7 @@ enum TokenType{
     RETURN, BREAK, NEXT, NIL, TRUE, FALSE, SUPER, SELF, CASE, WHEN, BEGIN, 
     RESCUE, ENSURE, RETRY, NOT, AND, OR, IN, THEN,
     
+    NEWLINE, // We need newline in ruby parsing
     PRINT,PUTS,
     BEGIN_C,END_C, // Both capital and small beg
     EOF
