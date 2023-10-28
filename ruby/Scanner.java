@@ -8,7 +8,11 @@ import static ruby.TokenType.*;
 public class Scanner {
 
     private static final Map<String,TokenType> keywords; 
-    
+    /*
+     * Creating a map for all keywods found in ruby
+     * If a keyword is encountered, It is added to the token 
+     * instead of setting as identifier
+     */
     static{
         keywords = new HashMap<>();
         keywords.put("BEGIN",BEGIN_C);
@@ -48,9 +52,15 @@ public class Scanner {
         //keywords.put("until",);
         keywords.put("when",WHEN);
         keywords.put("while",WHILE);
+        keywords.put("print",PRINT);
         //keywords.put("yield");
 
     }
+    /*
+     * We don't want to ever change the source during execution
+     * Also we don't want to create a new token list
+     * So both are final
+     */
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
 
@@ -233,12 +243,16 @@ public class Scanner {
     }
     private void number(){
         boolean isFloat = false;
-        while(isDigit(peek()) || peek()=='.') advance();
+        while(isDigit(peek())) advance();
         // Not considering method, have to change
         if (peek()=='.' && isDigit(peekNext())){
             isFloat = true;
             advance();
             while (isDigit(peek())) advance();
+            // Checking if identifier is named with number
+            if (isAlpha(peek())){
+                Ruby.error(line, "Invalid Indentifier");
+            }
         }
         if (!isFloat){
             addToken(INTEGER, Integer.parseInt((source.substring(start, current))));
