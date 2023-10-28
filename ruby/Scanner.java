@@ -137,16 +137,18 @@ public class Scanner {
             case '~':addToken(TILDA);
 
             case '/':
-                if (match('/')){
-                    while(peek()!='\n' && !isAtEnd()) advance();
-                }
-                else if (match('=')){
+                if (match('=')){
                     addToken(SLASH_EQUAL);
                 }
                 else{
                     addToken(SLASH);
                 }
                 break;
+            // comment in ruby is by #
+            case '#':
+                while(peek()!='\n' && !isAtEnd()) advance();
+                if (peek()=='\n') advance(); // Consuming the newline too, Basically considering line does not exist
+
             
             // Ignoring all kinds of white spaces
             // Come back to this when you need to change
@@ -155,6 +157,7 @@ public class Scanner {
             case '\t':
                 break;
             case '\n':
+                addToken(NEWLINE); // we need the newline token to find the end of our current line
                 line++;
                 break;
             
