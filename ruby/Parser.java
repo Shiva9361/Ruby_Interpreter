@@ -78,8 +78,10 @@ public class Parser {
         } 
         throw error(peek(), "Expect expression.");
     }
-  
-
+    
+    /*
+     * Helper Methods
+     */
 
     private boolean match(TokenType... types) {
         for (TokenType type : types) {

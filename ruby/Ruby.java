@@ -58,11 +58,12 @@ public class Ruby {
     private static void run(String source){
         Scanner sc = new Scanner(source);
         List<Token> tokens = sc.scanTokens();
-
+        /*  Uncomment to check tokens generated
         for (Token token :tokens){
             System.out.println(token);
-        }
+        }*/
         Parser parser = new Parser(tokens);
+        
         Expr expression = parser.parse();
         // Stop if there was a syntax error.
         if (hadError) return;
