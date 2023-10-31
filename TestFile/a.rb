@@ -1,5 +1,3 @@
 # hello
-print "hi
-
-how are you"
-n =3
+2*3+4;
+3*5+9
