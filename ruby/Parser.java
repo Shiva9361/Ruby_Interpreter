@@ -6,6 +6,7 @@ public class Parser {
     private static class ParseError extends RuntimeException {}
     private final List<Token> tokens;
     private int current = 0;
+
     Parser(List<Token> tokens) {
       this.tokens = tokens;
     } 
@@ -68,7 +69,7 @@ public class Parser {
         if (match(FALSE)) return new Expr.Literal(false);
         if (match(TRUE)) return new Expr.Literal(true);
         if (match(NIL)) return new Expr.Literal(null);
-        if (match(INTEGER, STRING)) {
+        if (match(INTEGER, FLOAT, STRING)) {
           return new Expr.Literal(previous().literal);
         }
         if (match(LEFT_PAREN)) {
@@ -82,11 +83,11 @@ public class Parser {
     /*
      * Helper Methods
      */
-
+    // Matches the given token and if it the token then advance
     private boolean match(TokenType... types) {
         for (TokenType type : types) {
           if (check(type)) {
-            advance();
+            advance(); 
             return true;
             } 
         }
@@ -108,7 +109,7 @@ public class Parser {
         return peek().type == EOF;
     }
     private Token peek() {
-        return tokens.get(current);
+        return tokens.get(current); // returns without incrementing
     }
     private Token previous() {
         return tokens.get(current - 1);
