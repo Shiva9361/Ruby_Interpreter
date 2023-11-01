@@ -1,4 +1,5 @@
 package ruby;
+import java.util.ArrayList;
 import java.util.List;
 import static ruby.TokenType.*;
 
@@ -10,13 +11,16 @@ public class Parser {
     Parser(List<Token> tokens) {
       this.tokens = tokens;
     } 
-    Expr parse() {
-        try {
-          return expression();
-        } catch (ParseError error) {
-          return null;
+    List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
+        while (!isAtEnd()) {
+          statements.add(declaration());
         }
-  }
+        return statements;
+    }
+    /*
+     * Expressions
+     */
     private Expr expression() {
         return equality();
     }
@@ -72,12 +76,53 @@ public class Parser {
         if (match(INTEGER, FLOAT, STRING)) {
           return new Expr.Literal(previous().literal);
         }
+        if (match(IDENTIFIER)){
+          return new Expr.Variable(previous());
+        }
         if (match(LEFT_PAREN)) {
           Expr expr = expression();
           consume(RIGHT_PAREN, "Expect ')' after expression.");
           return new Expr.Grouping(expr);
         } 
         throw error(peek(), "Expect expression.");
+    }
+    /*
+     * Statements
+     */
+    private Stmt declaration(){
+      try{
+        if (peek().type == IDENTIFIER) return varDeclaration();
+        return statement();
+      }catch(ParseError error){
+        synchronize();
+        return null;
+      }
+    }
+    // Free floating identifiers must be handled `
+    private Stmt varDeclaration(){
+      Token name = consume(IDENTIFIER, "??");
+      Expr initializer = null;
+      if (match(EQUAL)){
+        initializer = expression();
+      }
+      consume(NEWLINE, "Expect newline after value.");
+      return new Stmt.Var(name, initializer);
+    }
+
+    private Stmt statement(){
+      if(match(PRINT)) return printStatement();
+      return expressionStatement();
+    }
+
+    private Stmt printStatement(){
+      Expr value = expression();
+      consume(NEWLINE, "Expect newline after value.");
+      return new Stmt.Print(value);
+    }
+    private Stmt expressionStatement(){
+      Expr expr = expression();
+      consume(NEWLINE, "Expect newline after value.");
+      return new Stmt.Expression(expr);
     }
     
     /*
