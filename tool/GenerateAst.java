@@ -20,12 +20,21 @@ public class GenerateAst {
         //To generate the classes, it needs to have some description of each type and its fields.
         //Doubt here
         String outputDir = args[0];
+    
         defineAst(outputDir,"Expr",Arrays.asList(
                 "Binary     : Expr left, Token operator, Expr right",
                      "Grouping   : Expr expression",
                      "Literal    : Object value",
-                     "Unary      : Token operator, Expr right"
+                     "Unary      : Token operator, Expr right",
+                     "Variable   : Token name"
         ));
+        
+        defineAst(outputDir, "Stmt", Arrays.asList(
+            "Expression : Expr expression",
+            "Print : Expr expression",
+            "Var   : Token name, Expr initializer"
+        ));
+
     }
 
     private static void defineAst(String outputDir,String baseName,List<String> types) throws IOException{
