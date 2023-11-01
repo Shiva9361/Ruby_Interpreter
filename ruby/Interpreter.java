@@ -1,16 +1,49 @@
 package ruby;
 
-public class Interpreter implements Expr.Visitor<Object> {
+import java.util.List;
+
+public class Interpreter implements Expr.Visitor<Object>,Stmt.Visitor<Void>{
     
-    void interpret(Expr expression){
+    void interpret(List<Stmt> statements){
         try{
-            Object value = evaluate(expression);
-            System.out.println(stringify(value));
+            for (Stmt statement : statements){
+                execute(statement);
+            }
         }catch (RuntimeError error){
             Ruby.runtimeError(error);
         }
     }
-    
+    /*
+     * Statements
+     */
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression stmt){
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print stmt){
+        Object value = evaluate(stmt.expression);
+        String string = stringify(value);
+        // String -->Object --> String seems to mess up the newline characters 
+        // So this is needed
+        String finalString = string.replace("\\n", "\n");
+        
+        /*String[] stringArray = string.split("\n");
+        System.out.println(stringArray[1]);
+        int arrayLength = stringArray.length;
+        int index=0;
+        while(index<arrayLength-1){
+            System.out.println(stringArray);
+            index++;
+        }*/
+        System.out.print(finalString);
+        return null;
+    }
+    /*
+     * Expressions
+     */
     // the token already has the value
     @Override
     public Object visitLiteralExpr(Expr.Literal expr){
@@ -180,5 +213,8 @@ public class Interpreter implements Expr.Visitor<Object> {
     private String stringify(Object object){
         if (object == null) return "nil";
         return object.toString();
+    }
+    private void execute(Stmt stmt){
+        stmt.accept(this);
     }
 }
