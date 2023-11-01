@@ -156,7 +156,7 @@ public class Scanner {
             // comment in ruby is by #
             case '#':
                 while(peek()!='\n' && !isAtEnd()) advance();
-                if (peek()=='\n') advance(); // Consuming the newline too, Basically considering line does not exist
+                if (peek()=='\n') advance();line++; // Consuming the newline too
 
             
             // Ignoring all kinds of white spaces
@@ -276,8 +276,9 @@ public class Scanner {
         if (!isFloat){
             addToken(INTEGER, Integer.parseInt((source.substring(start, current))));
         }
+        // we are using java's double for float in ruby
         else{
-            addToken(FLOAT, Float.parseFloat((source.substring(start, current))));
+            addToken(FLOAT, Double.parseDouble((source.substring(start, current))));
         }
         
     }
