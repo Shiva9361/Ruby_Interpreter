@@ -249,6 +249,19 @@ public class Scanner {
         advance();
 
         String value = source.substring(start+1, current-1);
+        /*
+         * Java reads the bytes and adds extra slash 
+         * Soo need to remove
+         * \" \\"
+         */
+        value = value.replace("\\n", "\n");
+        value = value.replace("\\t", "\t");
+        value = value.replace("\\r", "\r");
+        value = value.replace("\\f", "\f");
+        //value = value.replace(, "\n");
+        value = value.replace("\\'", "\'");
+        value = value.replace("\\\\", "\\");
+        //System.out.println(value+"scanner");
         addToken(STRING, value);
     }
 
