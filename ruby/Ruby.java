@@ -61,7 +61,7 @@ public class Ruby {
     private static void run(String source){
         Scanner sc = new Scanner(source);
         List<Token> tokens = sc.scanTokens();
-        /*  Uncomment to check tokens generated
+        /*   Uncomment to check tokens generated
         for (Token token :tokens){
             System.out.println(token);
         }*/
