@@ -26,9 +26,10 @@ public class Interpreter implements Expr.Visitor<Object>,Stmt.Visitor<Void>{
     public Void visitPrintStmt(Stmt.Print stmt){
         Object value = evaluate(stmt.expression);
         String string = stringify(value);
-        // String -->Object --> String seems to mess up the newline characters 
+        // String -->Object --> String seems to mess all escape sequence characters 
         // So this is needed
-        String finalString = string.replace("\\n", "\n");
+
+        //String finalString = string.replace("\\n", "\n"); // change this for proper output
         
         /*String[] stringArray = string.split("\n");
         System.out.println(stringArray[1]);
@@ -38,7 +39,7 @@ public class Interpreter implements Expr.Visitor<Object>,Stmt.Visitor<Void>{
             System.out.println(stringArray);
             index++;
         }*/
-        System.out.print(finalString);
+        System.out.print(string);
         return null;
     }
     /*
