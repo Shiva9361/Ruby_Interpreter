@@ -84,8 +84,6 @@ public class Scanner {
             scanToken();
         }
         // adding EOF to the arraylist of tokens by creating a new Token object
-        addToken(NEWLINE); // added this to so one line commands work
-        line++;
         tokens.add(new Token(EOF, "", null, line));
         return tokens;
     }
