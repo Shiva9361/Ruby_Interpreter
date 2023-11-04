@@ -141,6 +141,8 @@ public class Parser {
   private Stmt statement() {
     if (match(PRINT))
       return printStatement();
+    if (match(PUTS))
+      return putsStatement();
     return expressionStatement();
   }
 
@@ -148,6 +150,12 @@ public class Parser {
     List<Expr> value = expressionList();
     consume(NEWLINE, "Expect newline after value.");
     return new Stmt.Print(value);
+  }
+
+  private Stmt putsStatement() {
+    List<Expr> value = expressionList();
+    consume(NEWLINE, "Expect newline after value.");
+    return new Stmt.Puts(value);
   }
 
   private Stmt expressionStatement() {

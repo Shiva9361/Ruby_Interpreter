@@ -33,7 +33,7 @@ public class Ruby {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
 
         // Charset.defaultCharset() - default character encoding
-        run(new String(bytes, Charset.defaultCharset()));
+        run(new String(bytes, Charset.defaultCharset()) + "\n");
         if (hadError)
             System.exit(65);
         if (hadRuntimeError)

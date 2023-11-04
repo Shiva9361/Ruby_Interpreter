@@ -9,6 +9,8 @@ abstract class Stmt {
 		R visitPrintStmt(Print stmt);
 
 		R visitVarStmt(Var stmt);
+
+		R visitPutsStmt(Puts stmt);
 	}
 
 	static class Expression extends Stmt {
@@ -32,6 +34,19 @@ abstract class Stmt {
 		@Override
 		<R> R accept(Visitor<R> visitor) {
 			return visitor.visitPrintStmt(this);
+		}
+
+		final List<Expr> expressions;
+	}
+
+	static class Puts extends Stmt {
+		Puts(List<Expr> expressions) {
+			this.expressions = expressions;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitPutsStmt(this);
 		}
 
 		final List<Expr> expressions;

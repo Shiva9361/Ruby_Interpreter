@@ -9,3 +9,4 @@ print x+y,"\n"
 x = "hiry"
 print x+"\n"
 print y
+puts y,"akilesh","mokshith",5+3,35-(7/9-4*10+16-1)*69.0

@@ -56,6 +56,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitPutsStmt(Stmt.Puts stmt) {
+        for (Expr expression : stmt.expressions) {
+            Object value = evaluate(expression);
+            String string = stringify(value);
+            System.out.println(string);
+        }
+        return null;
+    }
+
+    @Override
     public Object visitListExpr(Expr.List expr) {
         return evaluate(expr.right);
     }
