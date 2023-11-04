@@ -136,14 +136,14 @@ public class Parser {
       }
       Token varibleName = consume(IDENTIFIER, "??");
       System.out.println(varibleName.lexeme);
-      name.add(varibleName);
+      // name.add(varibleName);
     }
 
     List<Expr> initializer = new ArrayList<>();
 
     initializer = expressionList();
 
-    System.out.println(peek().type);
+    // System.out.println(peek().type);
     consume(NEWLINE, "Expect newline after value.");
     if (name.size() != initializer.size()) {
       throw new RuntimeError(null, "insufficient arguments");
