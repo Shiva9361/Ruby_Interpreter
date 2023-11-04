@@ -135,8 +135,8 @@ public class Parser {
 
       }
       Token varibleName = consume(IDENTIFIER, "??");
-      System.out.println(varibleName.lexeme);
-      // name.add(varibleName);
+      // System.out.println(varibleName.lexeme);
+      name.add(varibleName);
     }
 
     List<Expr> initializer = new ArrayList<>();
