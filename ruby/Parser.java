@@ -129,12 +129,25 @@ public class Parser {
 
   // Free floating identifiers must be handled `
   private Stmt varDeclaration() {
-    Token name = consume(IDENTIFIER, "??");
-    Expr initializer = null;
-    if (match(EQUAL)) {
-      initializer = expression();
+    List<Token> name = new ArrayList<>();
+    while (!match(EQUAL)) {
+      if (match(COMMA)) {
+
+      }
+      Token varibleName = consume(IDENTIFIER, "??");
+      System.out.println(varibleName.lexeme);
+      name.add(varibleName);
     }
+
+    List<Expr> initializer = new ArrayList<>();
+
+    initializer = expressionList();
+
+    System.out.println(peek().type);
     consume(NEWLINE, "Expect newline after value.");
+    if (name.size() != initializer.size()) {
+      throw new RuntimeError(null, "insufficient arguments");
+    }
     return new Stmt.Var(name, initializer);
   }
 

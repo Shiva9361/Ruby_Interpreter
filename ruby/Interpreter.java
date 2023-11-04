@@ -72,12 +72,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
-        Object value = null;
-        if (stmt.initializer != null) {
-            value = evaluate(stmt.initializer);
+        int index = 0;
+        // System.out.println("asdfgh");
+        for (Expr Initializer : stmt.initializer) {
+            if (Initializer != null) {
+                Object value = evaluate(Initializer);
+                environment.define(stmt.name.get(index).lexeme, value);
+                // System.out.println(value + "aaa");
+                index++;
+            }
         }
 
-        environment.define(stmt.name.lexeme, value);
         return null;
     }
 

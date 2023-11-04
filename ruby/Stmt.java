@@ -53,7 +53,7 @@ abstract class Stmt {
 	}
 
 	static class Var extends Stmt {
-		Var(Token name, Expr initializer) {
+		Var(List<Token> name, List<Expr> initializer) {
 			this.name = name;
 			this.initializer = initializer;
 		}
@@ -63,8 +63,8 @@ abstract class Stmt {
 			return visitor.visitVarStmt(this);
 		}
 
-		final Token name;
-		final Expr initializer;
+		final List<Token> name;
+		final List<Expr> initializer;
 	}
 
 	abstract <R> R accept(Visitor<R> visitor);

@@ -7,6 +7,11 @@ class Environment {
     private final Map<String, Object> values = new HashMap<>();
 
     Object get(Token name) {
+        // for (Map.Entry<String, Object> entry : values.entrySet()) {
+        // String key = entry.getKey();
+        // String value = entry.getValue().toString();
+        // System.out.println("Key: " + key + ", Value: " + value);
+        // }
         if (values.containsKey(name.lexeme)) {
             return values.get(name.lexeme);
         }
