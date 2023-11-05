@@ -123,8 +123,12 @@ public class Parser {
    */
   private Stmt declaration() {
     try {
-      if (peek().type == IDENTIFIER)
-        return varDeclaration();
+      if (peek().type == IDENTIFIER) {
+        if (superPeek().type == EQUAL || superPeek().type == COMMA) {// this condition is for checking if it is
+                                                                     // declration or assignment
+          return varDeclaration();
+        }
+      }
       return statement();
     } catch (ParseError error) {
       synchronize();
@@ -185,16 +189,16 @@ public class Parser {
   private Expr assignment() {
     Expr expr = equality();
 
-    if (match(EQUAL)) {
-      Token equals = previous();
+    if (match(PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL)) {
+      Token operator = previous();
       Expr value = assignment();
 
       if (expr instanceof Expr.Variable) {
         Token name = ((Expr.Variable) expr).name;
-        return new Expr.Assign(name, value);
+        return new Expr.Assign(name, operator, value);
       }
 
-      error(equals, "Invalid assignment target.");
+      error(operator, "Invalid assignment target.");
     }
 
     return expr;
@@ -234,6 +238,13 @@ public class Parser {
 
   private boolean isAtEnd() {
     return peek().type == EOF;
+  }
+
+  private Token superPeek() {
+    if (!isAtEnd()) {
+      return tokens.get(current + 1);
+    }
+    return null;
   }
 
   private Token peek() {

@@ -16,6 +16,19 @@ x1,y,z = 10,20,30
 puts z,y,x1
 x1,y = y,x1
 
-# x1 += 1
+x1 += 1
 # a=b=c=5
 puts z,y,x1
+x1-=1
+puts x1
+x1*=2
+puts x1
+x1/=2
+puts x1
+x+="dcq "
+puts x
+x*=5
+puts x
+d ="jkl"
+d =d*4
+puts d

@@ -20,8 +20,9 @@ abstract class Expr {
 	}
 
 	static class Assign extends Expr {
-		Assign(Token name, Expr value) {
+		Assign(Token name, Token operator, Expr value) {
 			this.name = name;
+			this.operator = operator;
 			this.value = value;
 		}
 
@@ -31,6 +32,7 @@ abstract class Expr {
 		}
 
 		final Token name;
+		final Token operator;
 		final Expr value;
 	}
 

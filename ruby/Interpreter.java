@@ -255,9 +255,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     private String StringReplicator(String str, int count) {
-        for (int i = 0; i < count; i++)
-            str += str;
-        return str;
+        String str1 = "";
+        for (int i = 0; i < count; i++) {
+            str1 += str;
+        }
+        return str1;
     }
 
     private Object evaluate(Expr expr) {
@@ -290,9 +292,94 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
-        Object value = evaluate(expr.value);
-        environment.assign(expr.name, value);
-        return value;
+        Object right = evaluate(expr.value);
+        Object left = environment.get(expr.name);
+        switch (expr.operator.type) {
+            case PLUS_EQUAL:
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        Object value = (double) (Integer) left + (double) right;
+                        environment.assign(expr.name, value);
+                    }
+                    if (right instanceof Integer) {
+                        Object value = (double) left + (double) (Integer) right;
+                        environment.assign(expr.name, value);
+                    }
+                    Object value = (double) left + (double) right;
+                    environment.assign(expr.name, value);
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    Object value = (int) left + (int) right;
+                    environment.assign(expr.name, value);
+                }
+                if (left instanceof String && right instanceof String) {
+                    Object value = (String) left + (String) right;
+                    environment.assign(expr.name, value);
+                }
+                break;
+            case MINUS_EQUAL:
+                checkNumberOperands(expr.operator, left, right);
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        Object value = (double) (Integer) left - (double) right;
+                        environment.assign(expr.name, value);
+                    }
+                    if (right instanceof Integer) {
+                        Object value = (double) left - (double) (Integer) right;
+                        environment.assign(expr.name, value);
+                    }
+                    Object value = (double) left - (double) right;
+                    environment.assign(expr.name, value);
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    Object value = (int) left - (int) right;
+                    environment.assign(expr.name, value);
+                }
+                break;
+            case STAR_EQUAL:
+                if (left instanceof String && (right instanceof Integer || right instanceof Double)) {
+                    Object value = StringReplicator((String) left, ((int) right));
+                    environment.assign(expr.name, value);
+                }
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        Object value = (double) (Integer) left * (double) right;
+                        environment.assign(expr.name, value);
+                    }
+                    if (right instanceof Integer) {
+                        Object value = (double) left * (double) (Integer) right;
+                    }
+                    Object value = (double) left * (double) right;
+                    environment.assign(expr.name, value);
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    Object value = (int) left * (int) right;
+                    environment.assign(expr.name, value);
+                }
+                break;
+            case SLASH_EQUAL:
+                checkNumberOperands(expr.operator, left, right);
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        Object value = (double) (Integer) left / (double) right;
+                        environment.assign(expr.name, value);
+                    }
+                    if (right instanceof Integer) {
+                        Object value = (double) left / (double) (Integer) right;
+                        environment.assign(expr.name, value);
+                    }
+                    Object value = (double) left / (double) right;
+                    environment.assign(expr.name, value);
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    Object value = (int) left / (int) right;
+                    environment.assign(expr.name, value);
+                }
+            default:
+                break;
+        }
+
+        return right;
     }
 
 }
