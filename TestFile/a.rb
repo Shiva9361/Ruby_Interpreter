@@ -11,5 +11,5 @@ print x+"\n"
 print y
 puts y,"akilesh","mokshith",5+3,35-(7/9-4*10+16-1)*69.0
 puts x
-x,y,z = 10,20,30
-puts z,y,x
+x1,y,z = 10,20,30
+puts z,y,x1
