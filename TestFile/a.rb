@@ -6,7 +6,7 @@ print "hi\n"
 
 x = 5
 y = 5
-print x+y,"\n"
+print (x+2)+y,"\n"
 x = "hiry"
 print x+"\n"
 print y
