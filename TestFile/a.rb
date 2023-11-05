@@ -17,7 +17,7 @@ puts z,y,x1
 x1,y = y,x1
 
 x1 += 1
-a=b=(c=5)+2
+a=(b=(c=5)+2)+10
 print a," :a value ",b," :b value ",c," :c value ","\n"
 puts z,y,x1
 x1-=1
