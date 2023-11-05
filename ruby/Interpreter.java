@@ -1,5 +1,7 @@
 package ruby;
 
+import static ruby.TokenType.EQUAL;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -292,9 +294,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
+        Object left = (expr.operator.type == EQUAL) ? expr.name.lexeme : environment.get(expr.name);
         Object right = evaluate(expr.value);
-        Object left = environment.get(expr.name);
         switch (expr.operator.type) {
+            case EQUAL:
+                environment.define(left.toString(), right);
+                return right;
             case PLUS_EQUAL:
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
@@ -379,7 +384,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 break;
         }
 
-        return right;
+        return null;
     }
 
 }

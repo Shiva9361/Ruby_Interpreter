@@ -124,8 +124,8 @@ public class Parser {
   private Stmt declaration() {
     try {
       if (peek().type == IDENTIFIER) {
-        if (superPeek().type == EQUAL || superPeek().type == COMMA) {// this condition is for checking if it is
-                                                                     // declration or assignment
+        if (superPeek().type == COMMA) {// this condition is for checking if it is
+                                        // declration or assignment
           return varDeclaration();
         }
       }
@@ -189,16 +189,16 @@ public class Parser {
   private Expr assignment() {
     Expr expr = equality();
 
-    if (match(PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL)) {
+    while (match(EQUAL, PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL)) {
       Token operator = previous();
       Expr value = assignment();
 
       if (expr instanceof Expr.Variable) {
         Token name = ((Expr.Variable) expr).name;
-        return new Expr.Assign(name, operator, value);
+        expr = new Expr.Assign(name, operator, value);
       }
 
-      error(operator, "Invalid assignment target.");
+      // error(operator, "Invalid assignment target.");
     }
 
     return expr;
