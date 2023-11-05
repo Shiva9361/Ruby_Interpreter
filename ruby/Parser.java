@@ -110,6 +110,11 @@ public class Parser {
       consume(RIGHT_PAREN, "Expect ')' after expression.");
       return new Expr.Grouping(expr);
     }
+    // dealing with empty lines making an empty line as just a null statement
+    if ((peek().type == NEWLINE)) {
+      return new Expr.Literal(null);
+    }
+
     throw error(peek(), "Expect expression.");
   }
 

@@ -1,5 +1,6 @@
 package ruby;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ruby.Expr.Variable;
@@ -74,13 +75,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitVarStmt(Stmt.Var stmt) {
         int index = 0;
         // System.out.println("asdfgh");
+        List<Object> values = new ArrayList<>();
         for (Expr Initializer : stmt.initializer) {
             if (Initializer != null) {
                 Object value = evaluate(Initializer);
-                environment.define(stmt.name.get(index).lexeme, value);
+                values.add(value);
                 // System.out.println(value + "aaa");
                 index++;
             }
+        }
+        for (int i = 0; i < index; i++) {
+            environment.define(stmt.name.get(i).lexeme, values.get(i));
         }
 
         return null;
