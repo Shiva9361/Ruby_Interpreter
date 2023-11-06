@@ -50,6 +50,7 @@ class Environment {
 
     void define(String name, Object value) {
         if (name.charAt(0) == '$' && enclosing != null) {
+            values.put(name, value);
             enclosing.define(name, value);
         }
         if (values.containsKey(name) && (name.charAt(0) >= 'A' && name.charAt(0) <= 'Z')) {

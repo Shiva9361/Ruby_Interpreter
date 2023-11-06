@@ -46,7 +46,7 @@ $ad=cq=67
 e=3
 puts e
 end
-puts e
+puts e,$ad
 end
 puts e
 end
