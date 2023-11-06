@@ -165,6 +165,8 @@ public class Parser {
       return printStatement();
     if (match(PUTS))
       return putsStatement();
+    if (match(DO))
+      return new Stmt.Block(block());
     return expressionStatement();
   }
 
@@ -184,6 +186,17 @@ public class Parser {
     Expr expr = expression();
     consume(NEWLINE, "Expect newline after value.");
     return new Stmt.Expression(expr);
+  }
+
+  private List<Stmt> block() {
+    List<Stmt> statements = new ArrayList<>();
+
+    while (!check(END) && !isAtEnd()) {
+      statements.add(declaration());
+    }
+
+    consume(END, "Expect 'end' after block.");
+    return statements;
   }
 
   private Expr assignment() {

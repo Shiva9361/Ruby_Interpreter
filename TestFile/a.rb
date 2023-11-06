@@ -33,3 +33,17 @@ puts x
 d ="jkl"
 d =d*4
 puts d
+do
+e =1
+puts e
+do
+e=2
+puts e
+do
+e=3
+puts e
+end
+puts e
+end
+puts e
+end
