@@ -34,7 +34,7 @@ class Environment {
     }
 
     void assign(Token name, Object value) {
-        if (values.containsKey(name.lexeme)) {
+        if (values.containsKey(name.lexeme) && !(name.lexeme.charAt(0) >= 'A' && name.lexeme.charAt(0) <= 'Z')) {
             values.put(name.lexeme, value);
             return;
         }
@@ -51,6 +51,12 @@ class Environment {
     void define(String name, Object value) {
         if (name.charAt(0) == '$' && enclosing != null) {
             enclosing.define(name, value);
+        }
+        if (values.containsKey(name) && (name.charAt(0) >= 'A' && name.charAt(0) <= 'Z')) {
+            throw new RuntimeError("Constant variable can not be changed'" + name + "'.");
+        }
+        if ((name.charAt(0) >= 'A' && name.charAt(0) <= 'Z') && enclosing != null) {
+            throw new RuntimeError("dynamic constant assignment is not allowed");
         }
         values.put(name, value);
     }

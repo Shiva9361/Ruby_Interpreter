@@ -3,7 +3,6 @@ print 35-(7/9-4*10+16-1)*69.0,"\n"
 print "hello world\n"
 print "hi\na\nshiva\tsasaank\n","\n","bye","\n","soni","\n","ght","\n"
 print "hi\n"
-
 x = 5
 y = 5
 print (x*2)+y,"\n"
@@ -33,8 +32,10 @@ puts x
 d ="jkl"
 d =d*4
 puts d
+fg,$v,C = 10,11,12
+puts fg,$v,C
 do
-e =1
+e =1*C
 puts e
 do
 e=2
