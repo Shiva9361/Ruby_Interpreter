@@ -26,7 +26,9 @@ class Environment {
         }
         if (enclosing != null)
             return enclosing.get(name);
-
+        if (name.lexeme.charAt(0) == '$') {
+            return null;
+        }
         throw new RuntimeError(name,
                 "Undefined variable '" + name.lexeme + "'.");
     }
@@ -47,6 +49,9 @@ class Environment {
     }
 
     void define(String name, Object value) {
+        if (name.charAt(0) == '$' && enclosing != null) {
+            enclosing.define(name, value);
+        }
         values.put(name, value);
     }
 

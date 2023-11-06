@@ -38,8 +38,10 @@ e =1
 puts e
 do
 e=2
+$as,x5 = 65,89
 puts e
 do
+$ad=cq=67
 e=3
 puts e
 end
@@ -47,3 +49,4 @@ puts e
 end
 puts e
 end
+puts $as,$ad
