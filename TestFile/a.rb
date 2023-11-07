@@ -51,7 +51,7 @@ print e," ",$ad,"\n"
 end
 print e,"\n"
 end
-puts $as,$ad,asdfg
+puts $as,$ad
 
 user_input = 1
 if user_input > 0 then
@@ -77,4 +77,14 @@ if 5>0 || 0>1
     puts "hj"
 elsif 5>0 && 1>0
     puts "dj"
+end
+
+unless 5>0 then
+    puts "main Stream"
+else
+    puts "else stream"
+end
+
+unless 5<0 
+    puts "I got executed"
 end

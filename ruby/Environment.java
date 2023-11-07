@@ -65,9 +65,6 @@ class Environment {
         // in ruby changing the value inchild scope changes it in parent scope as
         // everthing is assignment in ruby
         values.put(name, value);
-        if (enclosing != null) {
-            enclosing.define(name, value);
-        }
     }
 
 }

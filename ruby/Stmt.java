@@ -15,6 +15,8 @@ abstract class Stmt {
 		R visitVarStmt(Var stmt);
 
 		R visitPutsStmt(Puts stmt);
+
+		R visitUnlessStmt(Unless stmt);
 	}
 
 	static class Block extends Stmt {
@@ -57,6 +59,23 @@ abstract class Stmt {
 
 		final List<Expr> conditions;
 		final List<List<Stmt>> branches;
+		final List<Stmt> elseBranch;
+	}
+
+	static class Unless extends Stmt {
+		Unless(Expr condition, List<Stmt> branch, List<Stmt> elseBranch) {
+			this.condition = condition;
+			this.branch = branch;
+			this.elseBranch = elseBranch;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitUnlessStmt(this);
+		}
+
+		final Expr condition;
+		final List<Stmt> branch;
 		final List<Stmt> elseBranch;
 	}
 

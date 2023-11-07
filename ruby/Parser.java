@@ -171,6 +171,8 @@ public class Parser {
   }
 
   private Stmt statement() {
+    if (match(UNLESS))
+      return unlessStatement();
     if (match(IF))
       return ifStatement();
     if (match(PRINT))
@@ -180,6 +182,22 @@ public class Parser {
     if (match(BEGIN))
       return new Stmt.Block(block());
     return expressionStatement();
+  }
+
+  private Stmt unlessStatement() {
+    Expr condition = expression();
+    List<Stmt> branch = new ArrayList<>();
+    if (match(THEN)) {
+    }
+    advance();
+    branch = statementList();
+    List<Stmt> elseBranch = null;
+    if (match(ELSE)) {
+      advance();
+      elseBranch = statementList();
+    }
+    consume(END, "expect end keyword");
+    return new Stmt.Unless(condition, branch, elseBranch);
   }
 
   private Stmt ifStatement() {

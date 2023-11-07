@@ -55,6 +55,22 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitUnlessStmt(Stmt.Unless stmt) {
+        if (!isTruth(evaluate(stmt.condition))) {
+            for (Stmt branch : stmt.branch) {
+                execute(branch);
+            }
+        } else {
+            if (stmt.elseBranch != null) {
+                for (Stmt branch : stmt.elseBranch) {
+                    execute(branch);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Void visitPrintStmt(Stmt.Print stmt) {
         // Object value = evaluate(stmt.expressions);
         // String string = stringify(value);
