@@ -19,7 +19,7 @@ enum TokenType {
     // Logical ops && ||
     AMPERSAND_AMPERSAND, PIPE_PIPE, BANG,
     // Assignment ops
-    EQUAL, PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL,
+    EQUAL, PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, MOD_EQUAL,
     // Bitwise ops
     AMPERSAND, PIPE, KARROT, TILDA, LEFT_SHIFT, RIGHT_SHIFT,
     // literals

@@ -303,7 +303,7 @@ public class Parser {
   private Expr assignment() {
     Expr expr = or();
 
-    while (match(EQUAL, PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL)) {
+    while (match(EQUAL, PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, MOD_EQUAL)) {
       Token operator = previous();
       Expr value = assignment();
 

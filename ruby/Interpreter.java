@@ -526,8 +526,27 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                     Object value = (int) left / (int) right;
                     environment.assign(expr.name, value);
                 }
-            default:
                 break;
+            case MOD_EQUAL:
+                checkNumberOperands(expr.operator, left, right);
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        Object value = (double) (Integer) left % (double) right;
+                        environment.assign(expr.name, value);
+                    }
+                    if (right instanceof Integer) {
+                        Object value = (double) left % (double) (Integer) right;
+                        environment.assign(expr.name, value);
+                    }
+                    Object value = (double) left % (double) right;
+                    environment.assign(expr.name, value);
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    Object value = (int) left % (int) right;
+                    environment.assign(expr.name, value);
+                }
+                break;  
+            default:
         }
 
         return null;

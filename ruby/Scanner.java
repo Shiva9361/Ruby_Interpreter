@@ -133,7 +133,7 @@ public class Scanner {
                 addToken(QUESTION_MARK);
                 break;
             case '%':
-                addToken(MOD);
+                addToken(match('=') ? MOD_EQUAL : MOD);
                 break;
             case '*':
                 addToken(match('=') ? STAR_EQUAL : STAR);
@@ -145,6 +145,7 @@ public class Scanner {
             case '=':
                 addToken(match('=') ? EQUAL_EQUAL : EQUAL);
                 break;
+
 
             case '<':
                 if (match('=')) {
