@@ -72,6 +72,7 @@ public class Ruby {
         for (Token token : tokens) {
             System.out.println(token);
         }
+        System.out.println("-------------");
         Parser parser = new Parser(tokens);
 
         List<Stmt> statements = parser.parse();

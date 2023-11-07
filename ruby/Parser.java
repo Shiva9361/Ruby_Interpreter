@@ -161,6 +161,8 @@ public class Parser {
   }
 
   private Stmt statement() {
+    if (match(IF))
+      return ifStatement();
     if (match(PRINT))
       return printStatement();
     if (match(PUTS))
@@ -168,6 +170,42 @@ public class Parser {
     if (match(DO))
       return new Stmt.Block(block());
     return expressionStatement();
+  }
+
+  private Stmt ifStatement() {
+    List<Expr> conditions = new ArrayList<>();
+    List<Stmt> branches = new ArrayList<>();
+    Expr condition = expression();
+    // System.out.println(peek().type + " hso1");
+    if (match(THEN)) {
+    }
+    advance();
+    // System.out.println(peek().type + " hso1.5");
+    conditions.add(condition);
+    Stmt branch = statement();
+    branches.add(branch);
+    // System.out.println(peek().type + " hso1.51");
+    while (match(ELSIF)) {
+      // System.out.println(peek().type + " hso2");
+      Expr Condition = expression();
+      conditions.add(Condition);
+      advance();
+      // System.out.println(peek().type + " hso2.1");
+      Stmt Branch = statement();
+      branches.add(Branch);
+      // System.out.println(peek().type + " hso2.11");
+    }
+    // System.out.println(peek().type + " hso3");
+    Stmt elseBranch = null;
+    if (match(ELSE)) {
+      // System.out.println(peek().type + " hso4");
+      advance();
+      // System.out.println(peek().type + " hso4.1");
+      elseBranch = statement();
+    }
+    // System.out.println(peek().type + " hso5");
+    consume(END, "expect end keyword");
+    return new Stmt.If(conditions, branches, elseBranch);
   }
 
   private Stmt printStatement() {

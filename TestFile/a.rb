@@ -1,5 +1,5 @@
 #jregiigrope
-print 35-(7/9-4*10+16-1)*69.0,"\n"
+print 35-(7/9-4*10+16-1)*69.0,"\n",5>3
 print "hello world\n"
 print "hi\na\nshiva\tsasaank\n","\n","bye","\n","soni","\n","ght","\n"
 print "hi\n"
@@ -51,3 +51,12 @@ end
 puts e
 end
 puts $as,$ad
+
+# user_input = 1
+# if user_input > 0
+#     puts "You entered a positive number."
+# elsif user_input < 0
+#     puts "You entered a negative number."
+# else
+#     puts "You entered zero."
+# end
