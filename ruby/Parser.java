@@ -43,6 +43,16 @@ public class Parser {
     return exprs;
   }
 
+  private List<Stmt> statementList() {
+    List<Stmt> statements = new ArrayList<>();
+    do {
+      Stmt statement = statement();
+      statements.add(statement);
+    } while (!(match(END, ELSIF, ELSE)));
+    current--;
+    return statements;
+  }
+
   private Expr equality() {
     Expr expr = comparison();
     while (match(BANG_EQUAL, EQUAL_EQUAL)) {
@@ -174,7 +184,7 @@ public class Parser {
 
   private Stmt ifStatement() {
     List<Expr> conditions = new ArrayList<>();
-    List<Stmt> branches = new ArrayList<>();
+    List<List<Stmt>> branches = new ArrayList<>();
     Expr condition = expression();
     // System.out.println(peek().type + " hso1");
     if (match(THEN)) {
@@ -182,7 +192,7 @@ public class Parser {
     advance();
     // System.out.println(peek().type + " hso1.5");
     conditions.add(condition);
-    Stmt branch = statement();
+    List<Stmt> branch = statementList();
     branches.add(branch);
     // System.out.println(peek().type + " hso1.51");
     while (match(ELSIF)) {
@@ -191,17 +201,17 @@ public class Parser {
       conditions.add(Condition);
       advance();
       // System.out.println(peek().type + " hso2.1");
-      Stmt Branch = statement();
+      List<Stmt> Branch = statementList();
       branches.add(Branch);
       // System.out.println(peek().type + " hso2.11");
     }
     // System.out.println(peek().type + " hso3");
-    Stmt elseBranch = null;
+    List<Stmt> elseBranch = null;
     if (match(ELSE)) {
       // System.out.println(peek().type + " hso4");
       advance();
       // System.out.println(peek().type + " hso4.1");
-      elseBranch = statement();
+      elseBranch = statementList();
     }
     // System.out.println(peek().type + " hso5");
     consume(END, "expect end keyword");

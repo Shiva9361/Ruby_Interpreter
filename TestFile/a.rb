@@ -36,27 +36,32 @@ fg,$v,C = 10,11,12
 puts fg,$v,C
 do
 e =1*C
-puts e
+print e,"\n"
 do
 e=2
 $as,x5 = 65,89
-puts e
+print e,"\n"
 do
 $ad=cq=67
 e=3
-puts e
+print e,"\n"
 end
-puts e,$ad
+print e," ",$ad,"\n"
 end
-puts e
+print e,"\n"
 end
 puts $as,$ad
 
-# user_input = 1
-# if user_input > 0
-#     puts "You entered a positive number."
-# elsif user_input < 0
-#     puts "You entered a negative number."
-# else
-#     puts "You entered zero."
-# end
+user_input = 1
+if user_input > 0 then
+    puts "You entered a positive number."
+    $gl = 5
+elsif user_input < 0
+    puts "You entered a negative number."
+    $gl = 4
+else
+    puts "You entered zero."
+    $gl = 6
+    puts "dont enter"
+end
+print $gl

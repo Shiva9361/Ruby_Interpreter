@@ -39,13 +39,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         int i = 0;
         for (Expr condition : stmt.conditions) {
             if (isTruth(evaluate(condition))) {
-                execute(stmt.branches.get(i));
+                for (Stmt branch : stmt.branches.get(i)) {
+                    execute(branch);
+                }
                 break;
             }
             i++;
         }
-        if (i == stmt.conditions.size()) {
-            execute(stmt.elseBranch);
+        if (i == stmt.conditions.size() && stmt.elseBranch != null) {
+            for (Stmt branch : stmt.elseBranch) {
+                execute(branch);
+            }
         }
         return null;
     }
@@ -137,8 +141,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case BANG:
                 return !isTruth(right);
             case MINUS:
-            if (right instanceof Double) return -(double) right;
-            return -(int)right;
+                if (right instanceof Double)
+                    return -(double) right;
+                return -(int) right;
         }
         // just to satisfy the jvm
         return null;
