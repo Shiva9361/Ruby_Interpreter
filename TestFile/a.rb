@@ -1,9 +1,9 @@
 #jregiigrope
-print 35-(7/9-4*10+16-1)*69.0,"\n",5>3
+puts 35-(7/9-4*10+16-1)*69.0,"\n",5.1>3.1,5>3,5>3.1,5.1<3.1,5<3,5<3.1,5.1>=3.1,5>=3,5>=3.1,5.1<=3.1,5<=3,5<=3.1,-1>-1.9
 print "hello world\n"
 print "hi\na\nshiva\tsasaank\n","\n","bye","\n","soni","\n","ght","\n"
 print "hi\n"
-x = 5
+x = -5
 y = 5
 print (x*2)+y,"\n"
 x = "hiry"
