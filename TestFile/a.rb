@@ -1,4 +1,5 @@
 #jregiigrope
+puts 16.766%2
 puts 35-(7/9-4*10+16-1)*69.0,"\n",5.1>3.1,5>3,5>3.1,5.1<3.1,5<3,5<3.1,5.1>=3.1,5>=3,5>=3.1,5.1<=3.1,5<=3,5<=3.1,-1>-1.9
 print "hello world\n"
 print "hi\na\nshiva\tsasaank\n","\n","bye","\n","soni","\n","ght","\n"

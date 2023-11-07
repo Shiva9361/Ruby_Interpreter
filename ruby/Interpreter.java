@@ -300,6 +300,20 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                     return (String) left + (String) right;
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
+             case MOD:
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        return (double) (Integer) left % (double) right;
+                    }
+                    if (right instanceof Integer) {
+                        return (double) left % (double) (Integer) right;
+                    }
+                    return (double) left % (double) right;
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    return (int) left % (int) right;
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");    
         }
         // again to satisy jvm
         return null;
