@@ -137,7 +137,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case BANG:
                 return !isTruth(right);
             case MINUS:
-                return -(double) right;
+            if (right instanceof Double) return -(double) right;
+            return -(int)right;
         }
         // just to satisfy the jvm
         return null;
@@ -152,16 +153,60 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             // Comparison
             case GREATER:
                 checkNumberOperands(expr.operator, left, right);
-                return (double) (Double) left > (double) (Double) right;
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        return (double) (Integer) left > (double) right;
+                    }
+                    if (right instanceof Integer) {
+                        return (double) left > (double) (Integer) right;
+                    }
+                    return (double) left > (double) right;
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    return (int) left > (int) right;
+                }
             case GREATER_EQUAL:
                 checkNumberOperands(expr.operator, left, right);
-                return (double) left >= (double) right;
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        return (double) (Integer) left >= (double) right;
+                    }
+                    if (right instanceof Integer) {
+                        return (double) left >= (double) (Integer) right;
+                    }
+                    return (double) left >= (double) right;
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    return (int) left >= (int) right;
+                }
             case LESS:
                 checkNumberOperands(expr.operator, left, right);
-                return (double) left < (double) right;
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        return (double) (Integer) left < (double) right;
+                    }
+                    if (right instanceof Integer) {
+                        return (double) left < (double) (Integer) right;
+                    }
+                    return (double) left < (double) right;
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    return (int) left < (int) right;
+                }
             case LESS_EQUAL:
                 checkNumberOperands(expr.operator, left, right);
-                return (double) left <= (double) right;
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        return (double) (Integer) left <= (double) right;
+                    }
+                    if (right instanceof Integer) {
+                        return (double) left <= (double) (Integer) right;
+                    }
+                    return (double) left <= (double) right;
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    return (int) left <= (int) right;
+                }
 
             case BANG_EQUAL:
                 checkNumberOperands(expr.operator, left, right);
