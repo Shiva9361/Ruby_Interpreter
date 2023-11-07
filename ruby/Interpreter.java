@@ -383,6 +383,21 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitLogicalExpr(Expr.Logical expr) {
+        Object left = evaluate(expr.left);
+
+        if (expr.operator.type == TokenType.OR) {
+            if (isTruth(left))
+                return left;
+        } else {
+            if (!isTruth(left))
+                return left;
+        }
+
+        return evaluate(expr.right);
+    }
+
+    @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         Object left = (expr.operator.type == EQUAL) ? expr.name.lexeme : environment.get(expr.name);
         Object right = evaluate(expr.value);

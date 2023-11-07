@@ -199,6 +199,8 @@ public class Parser {
       // System.out.println(peek().type + " hso2");
       Expr Condition = expression();
       conditions.add(Condition);
+      if (match(THEN)) {
+      }
       advance();
       // System.out.println(peek().type + " hso2.1");
       List<Stmt> Branch = statementList();
@@ -247,8 +249,32 @@ public class Parser {
     return statements;
   }
 
-  private Expr assignment() {
+  private Expr and() {
     Expr expr = equality();
+
+    while (match(AND)) {
+      Token operator = previous();
+      Expr right = equality();
+      expr = new Expr.Logical(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  private Expr or() {
+    Expr expr = and();
+
+    while (match(OR)) {
+      Token operator = previous();
+      Expr right = and();
+      expr = new Expr.Logical(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  private Expr assignment() {
+    Expr expr = or();
 
     while (match(EQUAL, PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL)) {
       Token operator = previous();

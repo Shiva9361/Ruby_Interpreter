@@ -65,4 +65,16 @@ else
     $gl = 6
     puts "dont enter"
 end
-print $gl
+print $gl,"\n"
+print 2*8+4,"\n"
+if 5>0 or 0>1
+    puts "hj"
+elsif 5>0 and 1>0
+    puts "dj"
+end
+
+if 5>0 || 0>1
+    puts "hj"
+elsif 5>0 && 1>0
+    puts "dj"
+end

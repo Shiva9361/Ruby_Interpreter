@@ -169,15 +169,17 @@ public class Scanner {
                 addToken(match(':') ? COLON_COLON : COLON);
                 break;
             case '&':
-                addToken(match('&') ? AMPERSAND_AMPERSAND : AMPERSAND);
+                addToken(match('&') ? AND : AMPERSAND);
                 break;
             case '|':
-                addToken(match('|') ? PIPE_PIPE : PIPE);
+                addToken(match('|') ? OR : PIPE);
+                break;
             case '^':
                 addToken(KARROT);
+                break;
             case '~':
                 addToken(TILDA);
-
+                break;
             case '/':
                 if (match('=')) {
                     addToken(SLASH_EQUAL);
