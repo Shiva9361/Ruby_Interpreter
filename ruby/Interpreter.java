@@ -55,6 +55,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitWhileStmt(Stmt.While stmt)
+    {
+        while (isTruth(evaluate(stmt.condition))) {
+           for (Stmt statement : stmt.body) {
+                    execute(statement);
+                }
+            }
+         return null;
+    }
+
+    @Override
     public Void visitUnlessStmt(Stmt.Unless stmt) {
         if (!isTruth(evaluate(stmt.condition))) {
             for (Stmt branch : stmt.branch) {

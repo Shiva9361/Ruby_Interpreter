@@ -181,6 +181,8 @@ public class Parser {
       return putsStatement();
     if (match(BEGIN))
       return new Stmt.Block(block());
+    if (match(WHILE)) 
+      return whileStatement();
     return expressionStatement();
   }
 
@@ -236,6 +238,13 @@ public class Parser {
     // System.out.println(peek().type + " hso5");
     consume(END, "expect end keyword");
     return new Stmt.If(conditions, branches, elseBranch);
+  }
+
+  private Stmt whileStatement(){
+    Expr condition = expression();
+    List<Stmt> body = statementList();
+    consume(END, "expect end keyword");
+    return new Stmt.While(condition, body);
   }
 
   private Stmt printStatement() {

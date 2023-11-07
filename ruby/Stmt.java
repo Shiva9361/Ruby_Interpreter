@@ -17,6 +17,8 @@ abstract class Stmt {
 		R visitPutsStmt(Puts stmt);
 
 		R visitUnlessStmt(Unless stmt);
+
+		R visitWhileStmt(While stmt);
 	}
 
 	static class Block extends Stmt {
@@ -60,6 +62,20 @@ abstract class Stmt {
 		final List<Expr> conditions;
 		final List<List<Stmt>> branches;
 		final List<Stmt> elseBranch;
+	}
+
+		static class While extends Stmt {
+        While(Expr condition, List<Stmt> body)
+		{
+			this.condition = condition;
+			this.body = body;
+		}
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitWhileStmt(this);
+		}
+        final Expr condition;
+		final  List<Stmt> body;
 	}
 
 	static class Unless extends Stmt {
