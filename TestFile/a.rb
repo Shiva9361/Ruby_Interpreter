@@ -44,13 +44,14 @@ print e,"\n"
 begin
 $ad=cq=67
 e=3
+asdfg = 1000000
 print e,"\n"
 end
 print e," ",$ad,"\n"
 end
 print e,"\n"
 end
-puts $as,$ad
+puts $as,$ad,asdfg
 
 user_input = 1
 if user_input > 0 then
