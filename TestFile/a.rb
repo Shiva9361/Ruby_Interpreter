@@ -34,14 +34,14 @@ d =d*4
 puts d
 fg,$v,C = 10,11,12
 puts fg,$v,C
-do
+begin
 e =1*C
 print e,"\n"
-do
+begin
 e=2
 $as,x5 = 65,89
 print e,"\n"
-do
+begin
 $ad=cq=67
 e=3
 print e,"\n"

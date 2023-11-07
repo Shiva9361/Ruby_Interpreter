@@ -36,6 +36,9 @@ class Environment {
     void assign(Token name, Object value) {
         if (values.containsKey(name.lexeme) && !(name.lexeme.charAt(0) >= 'A' && name.lexeme.charAt(0) <= 'Z')) {
             values.put(name.lexeme, value);
+            if (enclosing != null) {
+                enclosing.assign(name, value);
+            }
             return;
         }
 
@@ -59,7 +62,12 @@ class Environment {
         if ((name.charAt(0) >= 'A' && name.charAt(0) <= 'Z') && enclosing != null) {
             throw new RuntimeError("dynamic constant assignment is not allowed");
         }
+        // in ruby changing the value inchild scope changes it in parent scope as
+        // everthing is assignment in ruby
         values.put(name, value);
+        if (enclosing != null) {
+            enclosing.define(name, value);
+        }
     }
 
 }
