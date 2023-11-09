@@ -19,6 +19,12 @@ abstract class Stmt {
 		R visitUnlessStmt(Unless stmt);
 
 		R visitWhileStmt(While stmt);
+
+		R visitUntilStmt(Until stmt);
+
+		//R visitForStmt(For stmt);
+
+		//R visitLoopStmt(Loop stmt);
 	}
 
 	static class Block extends Stmt {
@@ -77,6 +83,55 @@ abstract class Stmt {
         final Expr condition;
 		final  List<Stmt> body;
 	}
+
+	static class Until extends Stmt {
+        Until(Expr condition, List<Stmt> body)
+		{
+			this.condition = condition;
+			this.body = body;
+		}
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitUntilStmt(this);
+		}
+        final Expr condition;
+		final  List<Stmt> body;
+	}
+
+
+	// static class Loop extends Stmt {
+    //     Loop(Expr condition, List<Stmt> body) {
+    //         this.condition = condition;
+    //         this.body = body;
+    //     }
+
+    //     @Override
+    //     <R> R accept(Visitor<R> visitor) {
+    //         return visitor.visitLoopStmt(this);
+    //     }
+
+    //     final Expr condition;
+    //     final List<Stmt> body;
+	// }
+
+	    // static class For extends Stmt{
+		// 	For(Stmt initialization, Expr condition, Expr increment, List<Stmt> body) {
+		// 		this.initialization = initialization;
+		// 		this.condition = condition;
+		// 		this.increment = increment;
+		// 		this.body = body;
+		// 	}
+	
+		// 	@Override
+		// 	<R> R accept(Visitor<R> visitor) {
+		// 		return visitor.visitForStmt(this);
+		// 	}
+	
+		// 	final Stmt initialization;
+		// 	final Expr condition;
+		// 	final Expr increment;
+		// 	final List<Stmt> body;
+		// }
 
 	static class Unless extends Stmt {
 		Unless(Expr condition, List<Stmt> branch, List<Stmt> elseBranch) {

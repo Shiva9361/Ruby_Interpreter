@@ -179,10 +179,12 @@ public class Parser {
       return printStatement();
     if (match(PUTS))
       return putsStatement();
-    if (match(BEGIN))
+    if (match(DO))
       return new Stmt.Block(block());
     if (match(WHILE)) 
       return whileStatement();
+       if (match(UNTIL)) 
+      return untilStatement();
     return expressionStatement();
   }
 
@@ -246,6 +248,14 @@ public class Parser {
     consume(END, "expect end keyword");
     return new Stmt.While(condition, body);
   }
+   private Stmt untilStatement(){
+    Expr condition = expression();
+    consume(DO, "expect do keyword");
+    List<Stmt> body = statementList();
+    consume(END, "expect end keyword");
+    return new Stmt.Until(condition, body);
+  }
+
 
   private Stmt printStatement() {
     List<Expr> value = expressionList();

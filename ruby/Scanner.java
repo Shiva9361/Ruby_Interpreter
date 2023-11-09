@@ -56,6 +56,8 @@ public class Scanner {
         keywords.put("while", WHILE);
         keywords.put("print", PRINT);
         keywords.put("puts", PUTS);
+        keywords.put("loop", LOOP);
+        keywords.put("until", UNTIL);
         // keywords.put("yield");
 
     }

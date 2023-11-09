@@ -62,7 +62,7 @@ class Environment {
         if ((name.charAt(0) >= 'A' && name.charAt(0) <= 'Z') && enclosing != null) {
             throw new RuntimeError("dynamic constant assignment is not allowed");
         }
-        // in ruby changing the value inchild scope changes it in parent scope as
+        // in ruby changing the value in child scope changes it in parent scope as
         // everthing is assignment in ruby
         values.put(name, value);
     }

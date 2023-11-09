@@ -1,4 +1,4 @@
-#jregiigrope
+# #jregiigrope
 puts 16.766%2
 puts 35-(7/9-4*10+16-1)*69.0,"\n",5.1>3.1,5>3,5>3.1,5.1<3.1,5<3,5<3.1,5.1>=3.1,5>=3,5>=3.1,5.1<=3.1,5<=3,5<=3.1,-1>-1.9
 print "hello world\n"
@@ -35,14 +35,14 @@ d =d*4
 puts d
 fg,$v,C = 10,11,12
 puts fg,$v,C
-begin
+do
 e =1*C
 print e,"\n"
-begin
+do
 e=2
 $as,x5 = 65,89
 print e,"\n"
-begin
+do
 $ad=cq=67
 e=3
 asdfg = 1000000
@@ -91,13 +91,33 @@ unless 5<0
 end
 c = 0
 i = 0
-while i<10 
-c = i
-puts c
-i = i + 1
-end
 puts i
 puts 2%3
 aa = 4
 aa%=3
 puts aa
+i = "Sudo Placements"
+ 
+# # using for loop with the range
+# for a in 1..5 do
+     
+#  puts i
+  
+# end
+unless 5>0 
+    puts "I got executed"
+end
+var = 7
+until var == 11 do
+  puts var * 10
+  var = var + 1
+end
+
+i =10
+j=10
+while i<100
+    while j<100
+       puts j=j*5
+    end
+    puts i = i*5
+end
