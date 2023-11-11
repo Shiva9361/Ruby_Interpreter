@@ -22,11 +22,18 @@ abstract class Stmt {
 
 		R visitUntilStmt(Until stmt);
 
+		R visitBreakStmt(Break stmt);
+
 		//R visitForStmt(For stmt);
 
-		//R visitLoopStmt(Loop stmt);
+		R visitLoopStmt(Loop stmt);
 	}
-
+	static class Break extends Stmt {
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitBreakStmt(this);
+		}
+	}
 	static class Block extends Stmt {
 		Block(List<Stmt> statements) {
 			this.statements = statements;
@@ -99,26 +106,24 @@ abstract class Stmt {
 	}
 
 
-	// static class Loop extends Stmt {
-    //     Loop(Expr condition, List<Stmt> body) {
-    //         this.condition = condition;
-    //         this.body = body;
-    //     }
+	static class Loop extends Stmt {
+        Loop(List<Stmt> body) {
+            this.body = body;
+        }
 
-    //     @Override
-    //     <R> R accept(Visitor<R> visitor) {
-    //         return visitor.visitLoopStmt(this);
-    //     }
-
-    //     final Expr condition;
-    //     final List<Stmt> body;
-	// }
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitLoopStmt(this);
+        }
+        final List<Stmt> body;
+	}
 
 	    // static class For extends Stmt{
-		// 	For(Stmt initialization, Expr condition, Expr increment, List<Stmt> body) {
-		// 		this.initialization = initialization;
+		// 	For(Expr variable, Expr condition, Expr increment, Block block,List<Stmt> body) {
+		// 		this.variable = variable;
 		// 		this.condition = condition;
 		// 		this.increment = increment;
+		// 		this.block = block;
 		// 		this.body = body;
 		// 	}
 	
@@ -127,9 +132,10 @@ abstract class Stmt {
 		// 		return visitor.visitForStmt(this);
 		// 	}
 	
-		// 	final Stmt initialization;
+		// 	final Expr variable;
 		// 	final Expr condition;
 		// 	final Expr increment;
+		// 	final Block block;
 		// 	final List<Stmt> body;
 		// }
 

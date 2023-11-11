@@ -7,19 +7,16 @@ enum TokenType {
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE, LEFT_SQUARE, RIGHT_SQUARE,
     COMMA, SEMICOLON, COLON, COLON_COLON, QUESTION_MARK,
     BACKSLASH, ARROW_OP, FAT_ARROW_OP, DOT,
-
     ELLIPSES, // ahhh should check // argumnet forwarding havent't added token for this
-
     // general arithmetic ops
     MINUS, PLUS, SLASH, STAR, MOD,
-
     // One/two char tokens
     BANG_EQUAL, EQUAL_EQUAL, GREATER, GREATER_EQUAL,
     LESS, LESS_EQUAL,
     // Logical ops && ||
     AMPERSAND_AMPERSAND, PIPE_PIPE, BANG,
     // Assignment ops
-    EQUAL, PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, MOD_EQUAL,
+    EQUAL, PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, MOD_EQUAL, STAR_STAR,
     // Bitwise ops
     AMPERSAND, PIPE, KARROT, TILDA, LEFT_SHIFT, RIGHT_SHIFT,
     // literals

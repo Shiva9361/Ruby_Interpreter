@@ -8,6 +8,9 @@ import java.util.List;
 import ruby.Expr.Variable;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+    private static class BreakException extends RuntimeException{
+
+    } 
     private Environment environment = new Environment();
 
     void interpret(List<Stmt> statements) {
@@ -57,12 +60,23 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visitWhileStmt(Stmt.While stmt)
     {
-        while (isTruth(evaluate(stmt.condition))) {
+        try{while (isTruth(evaluate(stmt.condition))) {
            for (Stmt statement : stmt.body) {
                     execute(statement);
                 }
             }
-         return null;
+        }
+        catch(BreakException breakException)
+        {
+            // handle the break stmt
+        }        
+        return null;
+
+    }
+    public Void visitBreakStmt(Stmt.Break stmt)
+    {
+        throw new BreakException();
+
     }
 
      public Void visitUntilStmt(Stmt.Until stmt)
@@ -72,6 +86,20 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                     execute(statement);
                 }
             }
+         return null;
+    }
+    public Void visitLoopStmt(Stmt.Loop stmt)
+    {
+          try{
+            while (true) {
+                for (Stmt statement : stmt.body) {
+                    execute(statement);
+                }
+            }
+           }  
+          catch(BreakException breakException){
+            // handle the break stmt
+          } 
          return null;
     }
 

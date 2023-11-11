@@ -181,13 +181,24 @@ public class Parser {
       return putsStatement();
     if (match(DO))
       return new Stmt.Block(block());
-    if (match(WHILE)) 
-      return whileStatement();
-       if (match(UNTIL)) 
+    if (match(WHILE)) {
+            return whileStatement();
+    }
+    if (match(UNTIL)) 
       return untilStatement();
+    if (match(BREAK)) 
+    {
+      return breakStatement();  
+    }
+    if (match(LOOP)) 
+    {
+      return loopStatement();  
+    }
     return expressionStatement();
   }
-
+  private Stmt breakStatement(){
+   return new Stmt.Break();
+  }
   private Stmt unlessStatement() {
     Expr condition = expression();
     List<Stmt> branch = new ArrayList<>();
@@ -208,15 +219,15 @@ public class Parser {
     List<Expr> conditions = new ArrayList<>();
     List<List<Stmt>> branches = new ArrayList<>();
     Expr condition = expression();
-    // System.out.println(peek().type + " hso1");
+  //  System.out.println(peek().type + " hso1");
     if (match(THEN)) {
     }
     advance();
-    // System.out.println(peek().type + " hso1.5");
+   // System.out.println(peek().type + " hso1.5");
     conditions.add(condition);
     List<Stmt> branch = statementList();
     branches.add(branch);
-    // System.out.println(peek().type + " hso1.51");
+   // System.out.println(peek().type + " hso1.51");
     while (match(ELSIF)) {
       // System.out.println(peek().type + " hso2");
       Expr Condition = expression();
@@ -255,7 +266,12 @@ public class Parser {
     consume(END, "expect end keyword");
     return new Stmt.Until(condition, body);
   }
-
+private Stmt loopStatement(){
+    consume(DO, "expect do keyword");
+    List<Stmt> body = statementList();
+    consume(END, "expect end keyword");
+    return new Stmt.Loop(body);
+  }
 
   private Stmt printStatement() {
     List<Expr> value = expressionList();

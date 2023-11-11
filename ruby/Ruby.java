@@ -74,7 +74,6 @@ public class Ruby {
         }
         System.out.println("-------------");
         Parser parser = new Parser(tokens);
-
         List<Stmt> statements = parser.parse();
         // Stop if there was a syntax error.
         if (hadError)
