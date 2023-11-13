@@ -125,16 +125,16 @@ while i!=50
      break
 end
 puts "hi"
- break
-v = 8
-loop do
-    puts "GeeksforGeeks"
-    v = 7
-    puts v
-    if v== 8
-        puts 8
-     break
 
-    end
-end
+v = 8
+
 puts 2**2,2**2.0,2.0**2.0,2**-2
+=begin
+  hi
+  hello
+  welcome
+  to my
+  comment
+  cool right
+=end
+puts "hi"
