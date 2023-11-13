@@ -189,7 +189,7 @@ public class Parser {
       return printStatement();
     if (match(PUTS))
       return putsStatement();
-    if (match(DO))
+    if (match(BEGIN))
       return new Stmt.Block(block());
     if (match(WHILE)) {
             return whileStatement();

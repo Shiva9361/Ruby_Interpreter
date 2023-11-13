@@ -35,14 +35,14 @@ d =d*4
 puts d
 fg,$v,C = 10,11,12
 puts fg,$v,C
-do
+begin
 e =1*C
 print e,"\n"
-do
+begin
 e=2
 $as,x5 = 65,89
 print e,"\n"
-do
+begin
 $ad=cq=67
 e=3
 asdfg = 1000000
@@ -124,17 +124,26 @@ i = 40
 while i!=50
      break
 end
-puts "hi"
 
 v = 8
 
-puts 2**2,2**2.0,2.0**2.0,2**-2
-=begin
-  hi
-  hello
-  welcome
-  to my
-  comment
-  cool right
-=end
-puts "hi"
+# Ruby program to illustrate 'do..while'loop
+ 
+# starting of do..while loop
+loop do
+    #  break
+ puts "GeeksforGeeks"
+  s = 7
+ val = 7
+#   break
+ # using boolean expressions
+ if val == 7 
+    puts "i"
+    break
+ end
+  
+# ending of ruby do..while loop 
+end
+puts s
+# puts 2**2,2**2.0,2.0**2.0,2**-2
+break

@@ -9,7 +9,9 @@ import java.lang.Math;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private static class BreakException extends RuntimeException{
-
+        BreakException(String message){
+            super(message);
+        }
     } 
     private Environment environment = new Environment();
 
@@ -20,6 +22,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             }
         } catch (RuntimeError error) {
             Ruby.runtimeError(error);
+        }
+        //exception for the break statement should also be handled here too
+        catch (BreakException breakException)
+        {
+            System.out.println(breakException.getMessage());
         }
     }
 
@@ -75,10 +82,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
     public Void visitBreakStmt(Stmt.Break stmt)
     {
-        throw new BreakException();
+        throw new BreakException("f'u");
 
     }
-
      public Void visitUntilStmt(Stmt.Until stmt)
     {
         while(!isTruth(evaluate(stmt.condition))) {
@@ -88,19 +94,30 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             }
          return null;
     }
-    public Void visitLoopStmt(Stmt.Loop stmt)
-    {
-          try{
+    void executeLoop(List<Stmt> body, Environment environment){
+        Environment previous = this.environment;
+        System.out.println("changed to new");
+        try{
+            this.environment = environment;
             while (true) {
-                for (Stmt statement : stmt.body) {
+                for (Stmt statement : body) {
                     execute(statement);
                 }
             }
            }  
           catch(BreakException breakException){
             // handle the break stmt
-          } 
-         return null;
+          }
+          finally{
+            this.environment = previous;
+            System.out.println("changed to previous");
+          }
+    }
+
+    public Void visitLoopStmt(Stmt.Loop stmt)
+    { 
+        executeLoop(stmt.body, new Environment(environment));
+        return null;
     }
 
     @Override
