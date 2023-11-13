@@ -29,6 +29,7 @@ enum TokenType {
     NEWLINE, // We need newline in ruby parsing
     PRINT, PUTS,
     BEGIN_C, END_C, // Both capital and small beg
+    DOT_DOT_DOT, DOT_DOT, // For forLoop 
     EOF
 
 }

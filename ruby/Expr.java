@@ -19,7 +19,26 @@ abstract class Expr {
 		R visitListExpr(List expr);
 
 		R visitLogicalExpr(Logical expr);
+
+		R visitRangeExpr(Expr.Range expr);
 	}
+	
+	public static class Range extends Expr {
+        public final Expr left;
+        public final Expr right;
+        public final boolean inclusive;
+
+        public Range(Expr left, Expr right, boolean inclusive) {
+            this.left = left;
+            this.right = right;
+            this.inclusive = inclusive;
+        }
+
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitRangeExpr(this);
+        }
+    }
 
 	static class Assign extends Expr {
 		Assign(Token name, Token operator, Expr value) {

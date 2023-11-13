@@ -82,7 +82,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
     public Void visitBreakStmt(Stmt.Break stmt)
     {
-        throw new BreakException("f'u");
+        throw new BreakException("Invalid break");
 
     }
      public Void visitUntilStmt(Stmt.Until stmt)
@@ -117,6 +117,28 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitLoopStmt(Stmt.Loop stmt)
     { 
         executeLoop(stmt.body, new Environment(environment));
+        return null;
+    }
+    @Override
+    public Void visitForStmt(Stmt.For stmt) {
+        Object iterableValue = evaluate(stmt.iterable);
+        
+        if (iterableValue instanceof Iterable<?>) {
+            for (Object element : (Iterable<?>) iterableValue) {
+                // Create a new environment for the loop iteration
+                // Environment nestedEnv = new Environment();
+                // nestedEnv.define(stmt.variable.lexeme, element);
+
+                // Execute the loop body with the new environment
+                //execute(stmt.body);
+                for (Stmt statement : stmt.body) {
+                    execute(statement);
+                }
+            }
+        } else {
+            // Handle error: Non-iterable in the for loop
+        }
+
         return null;
     }
 
@@ -205,6 +227,29 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
      */
     // the token already has the value
     @Override
+    public Object visitRangeExpr(Expr.Range expr) {
+        Object left = evaluate(expr.left);
+        Object right = evaluate(expr.right);
+
+        if (!(left instanceof Integer) || !(right instanceof Integer)) {
+            // Handle error: Non-integer range boundaries
+            return null;
+        }
+
+        int start = (int) left;
+        int end = (int) right;
+
+        List<Object> result = new ArrayList<>();
+
+        for (int i = start; i <= (expr.inclusive ? end : end - 1); i++) {
+            result.add(i);
+        }
+
+        return result;
+    }
+
+    
+    @Override
     public Object visitLiteralExpr(Expr.Literal expr) {
         return expr.value;
     }
@@ -235,7 +280,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Object visitBinaryExpr(Expr.Binary expr) {
         Object left = evaluate(expr.left);
         Object right = evaluate(expr.right);
-
+        
         switch (expr.operator.type) {
             // Exponent
             case STAR_STAR:
@@ -384,7 +429,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                     return (String) left + (String) right;
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
-             case MOD:
+            case MOD:
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
                         return (double) (Integer) left % (double) right;
@@ -397,7 +442,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left % (int) right;
                 }
-                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");    
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");  
+                
+            // case DOT_DOT:
+            //     return rangeDotDot(left, right);
+            // case DOT_DOT_DOT:
+            //     return rangeDotDotDot(left, right);
         }
         // again to satisy jvm
         return null;
@@ -406,6 +456,36 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     /*
      * Helper Methods
      */
+    // private List<Object> rangeDotDot(Object left, Object right) {
+    //     if (left instanceof Integer && right instanceof Integer) {
+    //         int start = (int) left;
+    //         int end = (int) right;
+
+    //         List<Object> result = new ArrayList<>();
+    //         for (int i = start; i <= end; i++) {
+    //             result.add(i);
+    //         }
+    //         return result;
+    //     } else {
+    //         // Handle error: Non-integer range boundaries
+    //         return null;
+    //     }
+    // }
+    // private List<Object> rangeDotDotDot(Object left, Object right) {
+    //     if (left instanceof Integer && right instanceof Integer) {
+    //         int start = (int) left;
+    //         int end = (int) right;
+
+    //         List<Object> result = new ArrayList<>();
+    //         for (int i = start; i < end; i++) {
+    //             result.add(i);
+    //         }
+    //         return result;
+    //     } else {
+    //         // Handle error: Non-integer range boundaries
+    //         return null;
+    //     }
+    // }
 
     private boolean operandDoubleChecker(Object left, Object right) {
         if (left instanceof Double && right instanceof Double)

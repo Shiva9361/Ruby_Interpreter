@@ -119,9 +119,19 @@ public class Scanner {
                 addToken(COMMA);
                 break;
             case '.':
-                addToken(DOT);
+                 if (match('.')) {
+                    if(match('.'))
+                    {
+                        addToken(DOT_DOT_DOT);
+                    }
+                    else {
+                    addToken(DOT_DOT);
+                    }
+                } 
+                 else {
+                    addToken(DOT);
+                }
                 break;
-
             // we need to look at the second character.
             case '-':
                 addToken(match('=') ? MINUS_EQUAL : MINUS);

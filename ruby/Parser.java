@@ -65,10 +65,14 @@ public class Parser {
 
   private Expr comparison() {
     Expr expr = term();
-    while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+    while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, DOT_DOT, DOT_DOT_DOT)) {
       Token operator = previous();
       Expr right = term();
-      expr = new Expr.Binary(expr, operator, right);
+      if (operator.type == DOT_DOT || operator.type == DOT_DOT_DOT) {
+        expr = new Expr.Range(expr, right, false);
+    } else {
+        expr = new Expr.Binary(expr, operator, right);
+    }
     }
     return expr;
   }
@@ -183,8 +187,12 @@ public class Parser {
   private Stmt statement() {
     if (match(UNLESS))
       return unlessStatement();
-    if (match(IF))
+    if (match(IF)){
+      if(peek().type == DO){
+        // should add error handling
+      }
       return ifStatement();
+    }
     if (match(PRINT))
       return printStatement();
     if (match(PUTS))
@@ -204,6 +212,11 @@ public class Parser {
     {
       return loopStatement();  
     }
+    if (match(FOR)) 
+    {
+      return forStatement();  
+    }
+
     return expressionStatement();
   }
   private Stmt breakStatement(){
@@ -282,6 +295,24 @@ private Stmt loopStatement(){
     consume(END, "expect end keyword");
     return new Stmt.Loop(body);
   }
+  private Stmt forStatement() {
+    try {
+        if (match(IDENTIFIER)) {
+            Token variable = previous();
+            if (match(IN)) {
+                Expr iterable = expression();
+                //consume(DO, "Expect 'do' after for statement.");
+                List<Stmt> body = statementList();
+                consume(END, "Expect 'end' after for block.");
+                return new Stmt.For(variable, iterable, body);
+            }
+        }
+        return statement();
+    } catch (ParseError error) {
+        synchronize();
+        return null;
+    }
+}
 
   private Stmt printStatement() {
     List<Expr> value = expressionList();

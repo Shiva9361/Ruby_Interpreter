@@ -24,7 +24,7 @@ abstract class Stmt {
 
 		R visitBreakStmt(Break stmt);
 
-		//R visitForStmt(For stmt);
+		R visitForStmt(For stmt);
 
 		R visitLoopStmt(Loop stmt);
 	}
@@ -118,26 +118,23 @@ abstract class Stmt {
         final List<Stmt> body;
 	}
 
-	    // static class For extends Stmt{
-		// 	For(Expr variable, Expr condition, Expr increment, Block block,List<Stmt> body) {
-		// 		this.variable = variable;
-		// 		this.condition = condition;
-		// 		this.increment = increment;
-		// 		this.block = block;
-		// 		this.body = body;
-		// 	}
+	public static class For extends Stmt {
+		public final Token variable;
+		public final Expr iterable;
+		public final List<Stmt> body;
 	
-		// 	@Override
-		// 	<R> R accept(Visitor<R> visitor) {
-		// 		return visitor.visitForStmt(this);
-		// 	}
+		public For(Token variable, Expr iterable, List<Stmt> body) {
+			this.variable = variable;
+			this.iterable = iterable;
+			this.body = body;
+		}
 	
-		// 	final Expr variable;
-		// 	final Expr condition;
-		// 	final Expr increment;
-		// 	final Block block;
-		// 	final List<Stmt> body;
-		// }
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visitForStmt(this);
+		}
+	}
+	
 
 	static class Unless extends Stmt {
 		Unless(Expr condition, List<Stmt> branch, List<Stmt> elseBranch) {

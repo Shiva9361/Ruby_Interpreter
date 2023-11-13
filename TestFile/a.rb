@@ -108,12 +108,7 @@ end
 
 i =10
 j=10
-# using for loop with the range
-# for a in 1..5 do
 
-#  puts i
-
-# end
 while i<100
     # while j<100
     #    puts j=j*5
@@ -130,7 +125,7 @@ v = 8
 # Ruby program to illustrate 'do..while'loop
  
 # starting of do..while loop
-loop do
+loop do 
     #  break
  puts "GeeksforGeeks"
   s = 7
@@ -145,5 +140,18 @@ loop do
 # ending of ruby do..while loop 
 end
 puts s
-# puts 2**2,2**2.0,2.0**2.0,2**-2
-break
+puts 2**2,2**2.0,2.0**2.0,2**-2
+# break
+u=69
+for a in 1...5 
+il =200
+ puts il
+ puts u
+ while il==200
+ puts "hi"
+ break
+ end
+end
+puts il
+# break
+puts il
