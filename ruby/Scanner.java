@@ -155,7 +155,12 @@ public class Scanner {
                 addToken(match('=') ? BANG_EQUAL : BANG);
                 break;
             case '=':
-                addToken(match('=') ? EQUAL_EQUAL : EQUAL);
+                if (match('=')){
+                    addToken(EQUAL_EQUAL);
+                }
+                else if (iscomment()){
+                    break;
+                }
                 break;
 
 
@@ -339,6 +344,40 @@ public class Scanner {
             return '\0';
         return source.charAt(current + 1);
     }
+    private boolean iscomment(){
+        int extra = 0;
+        while (isAlpha(peek())){
+            advance(); extra++;
+        }
+        int end=0;
+        String text = source.substring(start, current);
+        if (text.compareTo("=begin")==0){
+            while(!isAtEnd()) {
+                if (peek() == '\n'){
+                    line++;
+                }
+                if (peek() == '='){
+                    end = current;
+                    advance();
+                    while (isAlpha(peek()))
+                    advance();
+                    String text2 = source.substring(end, current);
+                    System.out.println(text2);
+                    if (text2.compareTo("=end")==0){
+                        return true;
+                    }
+                }
+                advance();
+            }
+            Ruby.error(line, "Expect =end");
+        }
+        else{
+            current= current - extra;
+            addToken(EQUAL);
+            return false;
+        }
+        return false;
+    }
 
     private void number() {
         boolean isFloat = false;
@@ -367,6 +406,7 @@ public class Scanner {
 
     // after we scan an identifier, we check to see if it matches anything in the
     // map
+    
     private void identifier() {
         while (isAlphanumeric(peek()))
             advance();
