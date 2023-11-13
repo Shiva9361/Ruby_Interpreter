@@ -4,8 +4,8 @@ import static ruby.TokenType.EQUAL;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import ruby.Expr.Variable;
+import java.lang.Math;
+//import ruby.Expr.Variable;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private static class BreakException extends RuntimeException{
@@ -220,6 +220,24 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Object right = evaluate(expr.right);
 
         switch (expr.operator.type) {
+            // Exponent
+            case STAR_STAR:
+                checkNumberOperands(expr.operator, left, right);
+                if (operandDoubleChecker(left, right)) {
+                    if (left instanceof Integer) {
+                        return Math.pow((double)(Integer) left, (double)right);
+                    }
+                    if (right instanceof Integer) {
+                        return Math.pow((double) left , (double) (Integer) right);
+                    }
+                    return Math.pow((double) left , (double) right);
+                }
+                if (left instanceof Integer && right instanceof Integer) {
+                    if ((int)right<0){
+                        return "1/"+(int)Math.pow((int) left , -(int) right);
+                    }
+                    return (int)Math.pow((int) left , (int) right);
+                }
             // Comparison
             case GREATER:
                 checkNumberOperands(expr.operator, left, right);

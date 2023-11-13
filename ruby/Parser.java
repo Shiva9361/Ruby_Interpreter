@@ -84,8 +84,18 @@ public class Parser {
   }
 
   private Expr factor() {
-    Expr expr = unary();
+    Expr expr = power();
     while (match(SLASH, STAR, MOD)) {
+      Token operator = previous();
+      Expr right = power();
+      expr = new Expr.Binary(expr, operator, right);
+    }
+    return expr;
+  }
+
+  private Expr power(){
+    Expr expr = unary();
+    while(match(STAR_STAR)){
       Token operator = previous();
       Expr right = unary();
       expr = new Expr.Binary(expr, operator, right);

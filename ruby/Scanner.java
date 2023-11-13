@@ -139,7 +139,16 @@ public class Scanner {
                 addToken(match('=') ? MOD_EQUAL : MOD);
                 break;
             case '*':
-                addToken(match('=') ? STAR_EQUAL : STAR);
+                if (match('=')){
+                    addToken(STAR_EQUAL);
+                }
+                else if (match('*')){
+                    addToken(STAR_STAR);
+                }
+                else{
+                    addToken(STAR);
+                }
+                
                 break;
 
             case '!':
