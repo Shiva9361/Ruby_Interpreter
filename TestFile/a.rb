@@ -86,7 +86,7 @@ else
     puts "else stream"
 end
 
-unless 5<0 
+unless 5<0
     puts "I got executed"
 end
 c = 0
@@ -97,7 +97,7 @@ aa = 4
 aa%=3
 puts aa
 i = "Sudo Placements"
-unless 5>0 
+unless 5>0
     puts "I got executed"
 end
 var = 7
@@ -110,15 +110,15 @@ i =10
 j=10
 # using for loop with the range
 # for a in 1..5 do
-     
+
 #  puts i
-  
+
 # end
 while i<100
     # while j<100
     #    puts j=j*5
     # end
-    puts i = i*5 
+    puts i = i*5
 end
 i = 40
 while i!=50
@@ -130,10 +130,11 @@ v = 8
 loop do
     puts "GeeksforGeeks"
     v = 7
-    puts v 
+    puts v
     if v== 8
         puts 8
      break
-     
+
     end
 end
+puts 2**2,2**2.0,2.0**2.0,2**-2
