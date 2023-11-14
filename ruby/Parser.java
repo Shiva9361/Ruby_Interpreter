@@ -70,9 +70,9 @@ public class Parser {
       Expr right = term();
       if (operator.type == DOT_DOT || operator.type == DOT_DOT_DOT) {
         expr = new Expr.Range(expr, right, false);
-    } else {
+      } else {
         expr = new Expr.Binary(expr, operator, right);
-    }
+      }
     }
     return expr;
   }
@@ -97,9 +97,9 @@ public class Parser {
     return expr;
   }
 
-  private Expr power(){
+  private Expr power() {
     Expr expr = unary();
-    while(match(STAR_STAR)){
+    while (match(STAR_STAR)) {
       Token operator = previous();
       Expr right = unary();
       expr = new Expr.Binary(expr, operator, right);
@@ -187,10 +187,7 @@ public class Parser {
   private Stmt statement() {
     if (match(UNLESS))
       return unlessStatement();
-    if (match(IF)){
-      if(peek().type == DO){
-        // should add error handling
-      }
+    if (match(IF)) {
       return ifStatement();
     }
     if (match(PRINT))
@@ -200,28 +197,27 @@ public class Parser {
     if (match(BEGIN))
       return new Stmt.Block(block());
     if (match(WHILE)) {
-            return whileStatement();
+      return whileStatement();
     }
-    if (match(UNTIL)) 
+    if (match(UNTIL))
       return untilStatement();
-    if (match(BREAK)) 
-    {
-      return breakStatement();  
+    if (match(BREAK)) {
+      return breakStatement();
     }
-    if (match(LOOP)) 
-    {
-      return loopStatement();  
+    if (match(LOOP)) {
+      return loopStatement();
     }
-    if (match(FOR)) 
-    {
-      return forStatement();  
+    if (match(FOR)) {
+      return forStatement();
     }
 
     return expressionStatement();
   }
-  private Stmt breakStatement(){
-   return new Stmt.Break();
+
+  private Stmt breakStatement() {
+    return new Stmt.Break();
   }
+
   private Stmt unlessStatement() {
     Expr condition = expression();
     List<Stmt> branch = new ArrayList<>();
@@ -242,15 +238,19 @@ public class Parser {
     List<Expr> conditions = new ArrayList<>();
     List<List<Stmt>> branches = new ArrayList<>();
     Expr condition = expression();
-  //  System.out.println(peek().type + " hso1");
+    // System.out.println(peek().type + " hso1");
+    if (peek().type == DO) {
+      // should add error handling
+      Ruby.error(peek().line, "syntax error ,unexpected " + peek().type);
+    }
     if (match(THEN)) {
     }
     advance();
-   // System.out.println(peek().type + " hso1.5");
+    // System.out.println(peek().type + " hso1.5");
     conditions.add(condition);
     List<Stmt> branch = statementList();
     branches.add(branch);
-   // System.out.println(peek().type + " hso1.51");
+    // System.out.println(peek().type + " hso1.51");
     while (match(ELSIF)) {
       // System.out.println(peek().type + " hso2");
       Expr Condition = expression();
@@ -276,43 +276,46 @@ public class Parser {
     return new Stmt.If(conditions, branches, elseBranch);
   }
 
-  private Stmt whileStatement(){
+  private Stmt whileStatement() {
     Expr condition = expression();
     List<Stmt> body = statementList();
     consume(END, "expect end keyword");
     return new Stmt.While(condition, body);
   }
-   private Stmt untilStatement(){
+
+  private Stmt untilStatement() {
     Expr condition = expression();
     consume(DO, "expect do keyword");
     List<Stmt> body = statementList();
     consume(END, "expect end keyword");
     return new Stmt.Until(condition, body);
   }
-private Stmt loopStatement(){
+
+  private Stmt loopStatement() {
     consume(DO, "expect do keyword");
     List<Stmt> body = statementList();
     consume(END, "expect end keyword");
     return new Stmt.Loop(body);
   }
+
   private Stmt forStatement() {
     try {
-        if (match(IDENTIFIER)) {
-            Token variable = previous();
-            if (match(IN)) {
-                Expr iterable = expression();
-                //consume(DO, "Expect 'do' after for statement.");
-                List<Stmt> body = statementList();
-                consume(END, "Expect 'end' after for block.");
-                return new Stmt.For(variable, iterable, body);
-            }
+      if (match(IDENTIFIER)) {
+        Token variable = previous();
+        if (match(IN)) {
+          Expr iterable = expression();
+          // consume(DO, "Expect 'do' after for statement.");
+          List<Stmt> body = statementList();
+          consume(END, "Expect 'end' after for block.");
+          return new Stmt.For(variable, iterable, body);
         }
-        return statement();
+      }
+      return statement();
     } catch (ParseError error) {
-        synchronize();
-        return null;
+      synchronize();
+      return null;
     }
-}
+  }
 
   private Stmt printStatement() {
     List<Expr> value = expressionList();
