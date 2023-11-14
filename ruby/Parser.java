@@ -190,10 +190,10 @@ public class Parser {
     if (match(IF)) {
       return ifStatement();
     }
-    if (match(PRINT))
-      return printStatement();
-    if (match(PUTS))
-      return putsStatement();
+    if (match(PRINT, PUTS))
+      return printStatement(previous().type);
+    // if (match(PUTS))
+    // return putsStatement();
     if (match(BEGIN))
       return new Stmt.Block(block());
     if (match(WHILE)) {
@@ -317,17 +317,17 @@ public class Parser {
     }
   }
 
-  private Stmt printStatement() {
+  private Stmt printStatement(TokenType token) {
     List<Expr> value = expressionList();
     consume(NEWLINE, "Expect newline after value.");
-    return new Stmt.Print(value);
+    return new Stmt.Print(value, token);
   }
 
-  private Stmt putsStatement() {
-    List<Expr> value = expressionList();
-    consume(NEWLINE, "Expect newline after value.");
-    return new Stmt.Puts(value);
-  }
+  // private Stmt putsStatement() {
+  // List<Expr> value = expressionList();
+  // consume(NEWLINE, "Expect newline after value.");
+  // return new Stmt.Print(value, PUTS);
+  // }
 
   private Stmt expressionStatement() {
     Expr expr = expression();
