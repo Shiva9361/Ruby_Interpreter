@@ -123,27 +123,27 @@ end
 v = 8
 
 # Ruby program to illustrate 'do..while'loop
- 
+
 # starting of do..while loop
-loop do 
+loop do
     #  break
  puts "GeeksforGeeks"
   s = 7
  val = 7
 #   break
  # using boolean expressions
- if val == 7 
+ if val == 7
     puts "i"
     break
  end
-  
-# ending of ruby do..while loop 
+
+# ending of ruby do..while loop
 end
 #puts s
 puts 2**2,2**2.0,2.0**2.0,2**-2
 # break
 u=69
-for a in 1...5 
+for a in 1...5
 il =200
  puts il
  puts u
@@ -158,17 +158,17 @@ puts il
 
 day = 3
 
-case day   
-when  1   
-  puts "Wear Red or Orange"   
-when 2   
-  puts "Wear Green"   
-when 3   
-  puts "Wear Yellow"   
- when 4   
-  puts "Wear White"   
- when 5   
-  puts "Wear Black"   
-else   
-  puts "Wear Any color"   
-end   
+case day
+when  1
+  puts "Wear Red or Orange"
+when 2
+  puts "Wear Green"
+when 3
+  puts "Wear Yellow"
+ when 4
+  puts "Wear White"
+ when 5
+  puts "Wear Black"
+else
+  puts "Wear Any color"
+end
