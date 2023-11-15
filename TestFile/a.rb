@@ -139,7 +139,7 @@ loop do
   
 # ending of ruby do..while loop 
 end
-puts s
+#puts s
 puts 2**2,2**2.0,2.0**2.0,2**-2
 # break
 u=69
@@ -155,3 +155,20 @@ end
 puts il
 # break
 puts il
+
+day = 3
+
+case day   
+when  1   
+  puts "Wear Red or Orange"   
+when 2   
+  puts "Wear Green"   
+when 3   
+  puts "Wear Yellow"   
+ when 4   
+  puts "Wear White"   
+ when 5   
+  puts "Wear Black"   
+else   
+  puts "Wear Any color"   
+end   

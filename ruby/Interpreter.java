@@ -65,6 +65,27 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitCaseStmt(Stmt.Case stmt) {
+        Object expression = evaluate(stmt.condition);
+        int i = 0;
+        for (Expr condition : stmt.conditions) {
+            if ((evaluate(condition)) == expression) {
+                for (Stmt branch : stmt.branches.get(i)) {
+                    execute(branch);
+                }
+                break;
+            }
+            i++;
+        }
+        if (i == stmt.conditions.size() && stmt.elseBranch != null) {
+            for (Stmt branch : stmt.elseBranch) {
+                execute(branch);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Void visitWhileStmt(Stmt.While stmt) {
         try {
             while (isTruth(evaluate(stmt.condition))) {

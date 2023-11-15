@@ -29,6 +29,27 @@ abstract class Stmt {
 		R visitForStmt(For stmt);
 
 		R visitLoopStmt(Loop stmt);
+
+		R visitCaseStmt(Case stmt);
+	}
+
+	static class Case extends Stmt {
+		Case(Expr condition, List<Expr> conditions, List<List<Stmt>> branches, List<Stmt> elseBranch) {
+			this.condition = condition;
+			this.conditions = conditions;
+			this.branches = branches;
+			this.elseBranch = elseBranch;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitCaseStmt(this);
+		}
+
+		final Expr condition;
+		final List<Expr> conditions;
+		final List<List<Stmt>> branches;
+		final List<Stmt> elseBranch;
 	}
 
 	static class Break extends Stmt {

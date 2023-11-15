@@ -53,6 +53,16 @@ public class Parser {
     return statements;
   }
 
+  private List<Stmt> statementList2() {
+    List<Stmt> statements = new ArrayList<>();
+    do {
+      Stmt statement = statement();
+      statements.add(statement);
+    } while (!(match(END, WHEN, ELSE)));
+    current--;
+    return statements;
+  }
+
   private Expr equality() {
     Expr expr = comparison();
     while (match(BANG_EQUAL, EQUAL_EQUAL)) {
@@ -210,6 +220,9 @@ public class Parser {
     if (match(FOR)) {
       return forStatement();
     }
+    if (match(CASE)) {
+      return caseStatement();
+    }
 
     return expressionStatement();
   }
@@ -274,6 +287,30 @@ public class Parser {
     // System.out.println(peek().type + " hso5");
     consume(END, "expect end keyword");
     return new Stmt.If(conditions, branches, elseBranch);
+  }
+
+  private Stmt caseStatement() {
+    List<Expr> conditions = new ArrayList<>();
+    List<List<Stmt>> branches = new ArrayList<>();
+
+    Expr condition = expression();
+    advance();
+    while (match(WHEN)) {
+      Expr Condition = expression();
+      conditions.add(Condition);
+      if (match(THEN)) {
+      }
+      advance();
+      List<Stmt> Branch = statementList2();
+      branches.add(Branch);
+    }
+    List<Stmt> elseBranch = null;
+    if (match(ELSE)) {
+      advance();
+      elseBranch = statementList2();
+    }
+    consume(END, "expect end keyword");
+    return new Stmt.Case(condition, conditions, branches, elseBranch);
   }
 
   private Stmt whileStatement() {
