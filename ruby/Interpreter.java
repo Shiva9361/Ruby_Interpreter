@@ -221,7 +221,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     // }
 
     @Override
-    public Object visitListExpr(Expr.List expr) {
+    public Object visitListExpr(Expr.PrintList expr) {
         return evaluate(expr.right);
     }
 

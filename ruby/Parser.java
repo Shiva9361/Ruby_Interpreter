@@ -37,7 +37,7 @@ public class Parser {
     while (match(COMMA)) {
       Expr right = expression();
       exprs.add(right);
-      expr = new Expr.List(expr, right);
+      expr = new Expr.PrintList(expr, right);
     }
 
     return exprs;
