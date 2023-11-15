@@ -195,3 +195,6 @@ else
   puts "Default!"
   
 end  
+for a in 1...5
+    puts a*10.9
+end
