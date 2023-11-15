@@ -1,5 +1,7 @@
 package ruby;
 
+import static ruby.TokenType.PUTS;
+
 import java.util.List;
 
 abstract class Stmt {
@@ -14,7 +16,7 @@ abstract class Stmt {
 
 		R visitVarStmt(Var stmt);
 
-		R visitPutsStmt(Puts stmt);
+		// R visitPutsStmt(Puts stmt);
 
 		R visitUnlessStmt(Unless stmt);
 
@@ -27,13 +29,36 @@ abstract class Stmt {
 		R visitForStmt(For stmt);
 
 		R visitLoopStmt(Loop stmt);
+
+		R visitCaseStmt(Case stmt);
 	}
+
+	static class Case extends Stmt {
+		Case(Expr condition, List<Expr> conditions, List<List<Stmt>> branches, List<Stmt> elseBranch) {
+			this.condition = condition;
+			this.conditions = conditions;
+			this.branches = branches;
+			this.elseBranch = elseBranch;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitCaseStmt(this);
+		}
+
+		final Expr condition;
+		final List<Expr> conditions;
+		final List<List<Stmt>> branches;
+		final List<Stmt> elseBranch;
+	}
+
 	static class Break extends Stmt {
 		@Override
 		<R> R accept(Visitor<R> visitor) {
 			return visitor.visitBreakStmt(this);
 		}
 	}
+
 	static class Block extends Stmt {
 		Block(List<Stmt> statements) {
 			this.statements = statements;
@@ -77,64 +102,65 @@ abstract class Stmt {
 		final List<Stmt> elseBranch;
 	}
 
-		static class While extends Stmt {
-        While(Expr condition, List<Stmt> body)
-		{
+	static class While extends Stmt {
+		While(Expr condition, List<Stmt> body) {
 			this.condition = condition;
 			this.body = body;
 		}
+
 		@Override
 		<R> R accept(Visitor<R> visitor) {
 			return visitor.visitWhileStmt(this);
 		}
-        final Expr condition;
-		final  List<Stmt> body;
+
+		final Expr condition;
+		final List<Stmt> body;
 	}
 
 	static class Until extends Stmt {
-        Until(Expr condition, List<Stmt> body)
-		{
+		Until(Expr condition, List<Stmt> body) {
 			this.condition = condition;
 			this.body = body;
 		}
+
 		@Override
 		<R> R accept(Visitor<R> visitor) {
 			return visitor.visitUntilStmt(this);
 		}
-        final Expr condition;
-		final  List<Stmt> body;
+
+		final Expr condition;
+		final List<Stmt> body;
 	}
 
-
 	static class Loop extends Stmt {
-        Loop(List<Stmt> body) {
-            this.body = body;
-        }
+		Loop(List<Stmt> body) {
+			this.body = body;
+		}
 
-        @Override
-        <R> R accept(Visitor<R> visitor) {
-            return visitor.visitLoopStmt(this);
-        }
-        final List<Stmt> body;
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitLoopStmt(this);
+		}
+
+		final List<Stmt> body;
 	}
 
 	public static class For extends Stmt {
 		public final Token variable;
 		public final Expr iterable;
 		public final List<Stmt> body;
-	
+
 		public For(Token variable, Expr iterable, List<Stmt> body) {
 			this.variable = variable;
 			this.iterable = iterable;
 			this.body = body;
 		}
-	
+
 		@Override
 		public <R> R accept(Visitor<R> visitor) {
 			return visitor.visitForStmt(this);
 		}
 	}
-	
 
 	static class Unless extends Stmt {
 		Unless(Expr condition, List<Stmt> branch, List<Stmt> elseBranch) {
@@ -154,8 +180,9 @@ abstract class Stmt {
 	}
 
 	static class Print extends Stmt {
-		Print(List<Expr> expressions) {
+		Print(List<Expr> expressions, boolean type) {
 			this.expressions = expressions;
+			this.type = type;
 		}
 
 		@Override
@@ -164,20 +191,21 @@ abstract class Stmt {
 		}
 
 		final List<Expr> expressions;
+		final boolean type;
 	}
 
-	static class Puts extends Stmt {
-		Puts(List<Expr> expressions) {
-			this.expressions = expressions;
-		}
+	// static class Puts extends Stmt {
+	// Puts(List<Expr> expressions) {
+	// this.expressions = expressions;
+	// }
 
-		@Override
-		<R> R accept(Visitor<R> visitor) {
-			return visitor.visitPutsStmt(this);
-		}
+	// @Override
+	// <R> R accept(Visitor<R> visitor) {
+	// return visitor.visitPutsStmt(this);
+	// }
 
-		final List<Expr> expressions;
-	}
+	// final List<Expr> expressions;
+	// }
 
 	static class Var extends Stmt {
 		Var(List<Token> name, List<Expr> initializer) {

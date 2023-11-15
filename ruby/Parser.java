@@ -37,7 +37,7 @@ public class Parser {
     while (match(COMMA)) {
       Expr right = expression();
       exprs.add(right);
-      expr = new Expr.List(expr, right);
+      expr = new Expr.PrintList(expr, right);
     }
 
     return exprs;
@@ -49,6 +49,16 @@ public class Parser {
       Stmt statement = statement();
       statements.add(statement);
     } while (!(match(END, ELSIF, ELSE)));
+    current--;
+    return statements;
+  }
+
+  private List<Stmt> statementList2() {
+    List<Stmt> statements = new ArrayList<>();
+    do {
+      Stmt statement = statement();
+      statements.add(statement);
+    } while (!(match(END, WHEN, ELSE)));
     current--;
     return statements;
   }
@@ -70,9 +80,9 @@ public class Parser {
       Expr right = term();
       if (operator.type == DOT_DOT || operator.type == DOT_DOT_DOT) {
         expr = new Expr.Range(expr, right, false);
-    } else {
+      } else {
         expr = new Expr.Binary(expr, operator, right);
-    }
+      }
     }
     return expr;
   }
@@ -97,9 +107,9 @@ public class Parser {
     return expr;
   }
 
-  private Expr power(){
+  private Expr power() {
     Expr expr = unary();
-    while(match(STAR_STAR)){
+    while (match(STAR_STAR)) {
       Token operator = previous();
       Expr right = unary();
       expr = new Expr.Binary(expr, operator, right);
@@ -187,41 +197,40 @@ public class Parser {
   private Stmt statement() {
     if (match(UNLESS))
       return unlessStatement();
-    if (match(IF)){
-      if(peek().type == DO){
-        // should add error handling
-      }
+    if (match(IF)) {
       return ifStatement();
     }
-    if (match(PRINT))
-      return printStatement();
-    if (match(PUTS))
-      return putsStatement();
+    if (match(PRINT, PUTS))
+      return printStatement(previous().type);
+    // if (match(PUTS))
+    // return putsStatement();
     if (match(BEGIN))
       return new Stmt.Block(block());
     if (match(WHILE)) {
-            return whileStatement();
+      return whileStatement();
     }
-    if (match(UNTIL)) 
+    if (match(UNTIL))
       return untilStatement();
-    if (match(BREAK)) 
-    {
-      return breakStatement();  
+    if (match(BREAK)) {
+      return breakStatement();
     }
-    if (match(LOOP)) 
-    {
-      return loopStatement();  
+    if (match(LOOP)) {
+      return loopStatement();
     }
-    if (match(FOR)) 
-    {
-      return forStatement();  
+    if (match(FOR)) {
+      return forStatement();
+    }
+    if (match(CASE)) {
+      return caseStatement();
     }
 
     return expressionStatement();
   }
-  private Stmt breakStatement(){
-   return new Stmt.Break();
+
+  private Stmt breakStatement() {
+    return new Stmt.Break();
   }
+
   private Stmt unlessStatement() {
     Expr condition = expression();
     List<Stmt> branch = new ArrayList<>();
@@ -242,15 +251,19 @@ public class Parser {
     List<Expr> conditions = new ArrayList<>();
     List<List<Stmt>> branches = new ArrayList<>();
     Expr condition = expression();
-  //  System.out.println(peek().type + " hso1");
+    // System.out.println(peek().type + " hso1");
+    if (peek().type == DO) {
+      // should add error handling
+      Ruby.error(peek().line, "syntax error ,unexpected " + peek().type);
+    }
     if (match(THEN)) {
     }
     advance();
-   // System.out.println(peek().type + " hso1.5");
+    // System.out.println(peek().type + " hso1.5");
     conditions.add(condition);
     List<Stmt> branch = statementList();
     branches.add(branch);
-   // System.out.println(peek().type + " hso1.51");
+    // System.out.println(peek().type + " hso1.51");
     while (match(ELSIF)) {
       // System.out.println(peek().type + " hso2");
       Expr Condition = expression();
@@ -276,56 +289,91 @@ public class Parser {
     return new Stmt.If(conditions, branches, elseBranch);
   }
 
-  private Stmt whileStatement(){
+  private Stmt caseStatement() {
+    List<Expr> conditions = new ArrayList<>();
+    List<List<Stmt>> branches = new ArrayList<>();
+
+    Expr condition = expression();
+    while (!match(WHEN)) {
+      if (peek().type == NEWLINE) {
+        advance();
+      } else {
+        Ruby.error(peek().line, "expecting 'when' ");
+        break;
+      }
+    }
+    current--;
+    while (match(WHEN)) {
+      Expr Condition = expression();
+      conditions.add(Condition);
+      if (match(THEN)) {
+      }
+      advance();
+      List<Stmt> Branch = statementList2();
+      branches.add(Branch);
+    }
+    List<Stmt> elseBranch = null;
+    if (match(ELSE)) {
+      advance();
+      elseBranch = statementList2();
+    }
+    consume(END, "expect end keyword");
+    return new Stmt.Case(condition, conditions, branches, elseBranch);
+  }
+
+  private Stmt whileStatement() {
     Expr condition = expression();
     List<Stmt> body = statementList();
     consume(END, "expect end keyword");
     return new Stmt.While(condition, body);
   }
-   private Stmt untilStatement(){
+
+  private Stmt untilStatement() {
     Expr condition = expression();
     consume(DO, "expect do keyword");
     List<Stmt> body = statementList();
     consume(END, "expect end keyword");
     return new Stmt.Until(condition, body);
   }
-private Stmt loopStatement(){
+
+  private Stmt loopStatement() {
     consume(DO, "expect do keyword");
     List<Stmt> body = statementList();
     consume(END, "expect end keyword");
     return new Stmt.Loop(body);
   }
+
   private Stmt forStatement() {
     try {
-        if (match(IDENTIFIER)) {
-            Token variable = previous();
-            System.out.println(variable.lexeme+" "+variable.type);
-            if (match(IN)) {
-                Expr iterable = expression();
-                //consume(DO, "Expect 'do' after for statement.");
-                List<Stmt> body = statementList();
-                consume(END, "Expect 'end' after for block.");
-                return new Stmt.For(variable, iterable, body);
-            }
+      if (match(IDENTIFIER)) {
+        Token variable = previous();
+        if (match(IN)) {
+          Expr iterable = expression();
+          // consume(DO, "Expect 'do' after for statement.");
+          List<Stmt> body = statementList();
+          consume(END, "Expect 'end' after for block.");
+          return new Stmt.For(variable, iterable, body);
         }
-        return statement();
+      }
+      return statement();
     } catch (ParseError error) {
-        synchronize();
-        return null;
+      synchronize();
+      return null;
     }
-}
-
-  private Stmt printStatement() {
-    List<Expr> value = expressionList();
-    consume(NEWLINE, "Expect newline after value.");
-    return new Stmt.Print(value);
   }
 
-  private Stmt putsStatement() {
+  private Stmt printStatement(TokenType token) {
     List<Expr> value = expressionList();
     consume(NEWLINE, "Expect newline after value.");
-    return new Stmt.Puts(value);
+    boolean type = (token == PUTS) ? true : false;
+    return new Stmt.Print(value, type);
   }
+
+  // private Stmt putsStatement() {
+  // List<Expr> value = expressionList();
+  // consume(NEWLINE, "Expect newline after value.");
+  // return new Stmt.Print(value, PUTS);
+  // }
 
   private Stmt expressionStatement() {
     Expr expr = expression();

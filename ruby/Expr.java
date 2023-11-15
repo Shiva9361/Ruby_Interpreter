@@ -16,29 +16,29 @@ abstract class Expr {
 
 		R visitVariableExpr(Variable expr);
 
-		R visitListExpr(List expr);
+		R visitListExpr(PrintList expr);
 
 		R visitLogicalExpr(Logical expr);
 
 		R visitRangeExpr(Expr.Range expr);
 	}
-	
+
 	public static class Range extends Expr {
-        public final Expr left;
-        public final Expr right;
-        public final boolean inclusive;
+		public final Expr left;
+		public final Expr right;
+		public final boolean inclusive;
 
-        public Range(Expr left, Expr right, boolean inclusive) {
-            this.left = left;
-            this.right = right;
-            this.inclusive = inclusive;
-        }
+		public Range(Expr left, Expr right, boolean inclusive) {
+			this.left = left;
+			this.right = right;
+			this.inclusive = inclusive;
+		}
 
-        @Override
-        public <R> R accept(Visitor<R> visitor) {
-            return visitor.visitRangeExpr(this);
-        }
-    }
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visitRangeExpr(this);
+		}
+	}
 
 	static class Assign extends Expr {
 		Assign(Token name, Token operator, Expr value) {
@@ -57,8 +57,8 @@ abstract class Expr {
 		final Expr value;
 	}
 
-	static class List extends Expr {
-		List(Expr left, Expr right) {
+	static class PrintList extends Expr {
+		PrintList(Expr left, Expr right) {
 			this.left = left;
 			this.right = right;
 		}

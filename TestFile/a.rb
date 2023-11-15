@@ -122,44 +122,76 @@
 
 # v = 8
 
-# # Ruby program to illustrate 'do..while'loop
- 
-# # starting of do..while loop
-# loop do 
-#     #  break
-#  puts "GeeksforGeeks"
-#   s = 7
-#  val = 7
-# #   break
-#  # using boolean expressions
-#  if val == 7 
-#     puts "i"
-#     break
-#  end
-  
-# # ending of ruby do..while loop 
-# end
-# # puts s
-# puts 2**2,2**2.0,2.0**2.0,2**-2
-# # break
-# u=69
-# for a in 1...5 
-# il =200
-#  puts il
-#  puts u
-#  while il==200
-#  puts "hi"
-#  break
-#  end
-# end
-# puts il
-# # break
-# puts il
-i1=100
-for a in 1..5
-    puts a
-    if a== 3
-        break
-    end
+# Ruby program to illustrate 'do..while'loop
+
+# starting of do..while loop
+loop do
+    #  break
+ puts "GeeksforGeeks"
+  s = 7
+ val = 7
+#   break
+ # using boolean expressions
+ if val == 7
+    puts "i"
+    break
+ end
+
+# ending of ruby do..while loop
 end
-puts i1+1
+#puts s
+puts 2**2,2**2.0,2.0**2.0,2**-2
+# break
+u=69
+for a in 1...5
+il =200
+ puts il
+ puts u
+ while il==200
+ puts "hi"
+ break
+ end
+end
+puts il
+# break
+puts il
+
+day = 3
+
+case day
+when  1
+  puts "Wear Red or Orange"
+when 2
+  puts "Wear Green"
+when 3
+  puts "Wear Yellow"
+ when 4
+  puts "Wear White"
+ when 5
+  puts "Wear Black"
+else
+  puts "Wear Any color"
+end
+
+str = "two"
+  
+# using case statement 
+case str  
+  
+# using when 
+when "one"  
+  puts 'Input is 1'
+  
+when "two"  
+  puts 'Input is 2'
+  
+when "three"  
+  puts 'Input is 3'
+  
+ when "four"  
+  puts 'Input is 4'
+  
+else  
+  puts "Default!"
+  
+end  

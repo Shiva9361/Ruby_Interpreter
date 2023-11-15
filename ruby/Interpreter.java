@@ -8,11 +8,12 @@ import java.lang.Math;
 //import ruby.Expr.Variable;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
-    private static class BreakException extends RuntimeException{
-        BreakException(String message){
+    private static class BreakException extends RuntimeException {
+        BreakException(String message) {
             super(message);
         }
-    } 
+    }
+
     private Environment environment = new Environment();
 
     void interpret(List<Stmt> statements) {
@@ -23,9 +24,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         } catch (RuntimeError error) {
             Ruby.runtimeError(error);
         }
-        //exception for the break statement should also be handled here too
-        catch (BreakException breakException)
-        {
+        // exception for the break statement should also be handled here too
+        catch (BreakException breakException) {
             System.out.println(breakException.getMessage());
         }
     }
@@ -65,66 +65,84 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
-    public Void visitWhileStmt(Stmt.While stmt)
-    {
-        try{while (isTruth(evaluate(stmt.condition))) {
-           for (Stmt statement : stmt.body) {
+    public Void visitCaseStmt(Stmt.Case stmt) {
+        Object expression = evaluate(stmt.condition);
+        int i = 0;
+        for (Expr condition : stmt.conditions) {
+            if ((evaluate(condition) == expression)
+                    || evaluate(condition).toString().compareTo(expression.toString()) == 0) {
+                for (Stmt branch : stmt.branches.get(i)) {
+                    execute(branch);
+                }
+                break;
+            }
+            i++;
+        }
+        if (i == stmt.conditions.size() && stmt.elseBranch != null) {
+            for (Stmt branch : stmt.elseBranch) {
+                execute(branch);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitWhileStmt(Stmt.While stmt) {
+        try {
+            while (isTruth(evaluate(stmt.condition))) {
+                for (Stmt statement : stmt.body) {
                     execute(statement);
                 }
             }
-        }
-        catch(BreakException breakException)
-        {
+        } catch (BreakException breakException) {
             // handle the break stmt
-        }        
+        }
         return null;
 
     }
-    public Void visitBreakStmt(Stmt.Break stmt)
-    {
+
+    public Void visitBreakStmt(Stmt.Break stmt) {
         throw new BreakException("Invalid break");
 
     }
-     public Void visitUntilStmt(Stmt.Until stmt)
-    {
-        while(!isTruth(evaluate(stmt.condition))) {
-           for (Stmt statement : stmt.body) {
-                    execute(statement);
-                }
+
+    public Void visitUntilStmt(Stmt.Until stmt) {
+        while (!isTruth(evaluate(stmt.condition))) {
+            for (Stmt statement : stmt.body) {
+                execute(statement);
             }
-         return null;
+        }
+        return null;
     }
-    void executeLoop(List<Stmt> body, Environment environment){
+
+    void executeLoop(List<Stmt> body, Environment environment) {
         Environment previous = this.environment;
         System.out.println("changed to new");
-        try{
+        try {
             this.environment = environment;
             while (true) {
                 for (Stmt statement : body) {
                     execute(statement);
                 }
             }
-           }  
-          catch(BreakException breakException){
+        } catch (BreakException breakException) {
             // handle the break stmt
-          }
-          finally{
+        } finally {
             this.environment = previous;
             System.out.println("changed to previous");
-          }
+        }
     }
 
-    public Void visitLoopStmt(Stmt.Loop stmt)
-    { 
+    public Void visitLoopStmt(Stmt.Loop stmt) {
         executeLoop(stmt.body, new Environment(environment));
         return null;
     }
+
     @Override
     public Void visitForStmt(Stmt.For stmt) {
         try{
         Object iterableValue = evaluate(stmt.iterable);
-      //  System.out.println(iterableValue.toString());
-        
+
         if (iterableValue instanceof Iterable<?>) {
             for (Object element : (Iterable<?>) iterableValue) {
                // environment.define(left.toString(), right);
@@ -133,7 +151,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                  environment.define(stmt.variable.lexeme, element);
 
                 // Execute the loop body with the new environment
-                //execute(stmt.body);
+                // execute(stmt.body);
                 for (Stmt statement : stmt.body) {
                     execute(statement);
                 }
@@ -189,23 +207,27 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         for (Expr expression : stmt.expressions) {
             Object value = evaluate(expression);
             String string = stringify(value);
-            System.out.print(string);
+            if (stmt.type) {
+                System.out.println(string);
+            } else {
+                System.out.print(string);
+            }
         }
         return null;
     }
 
-    @Override
-    public Void visitPutsStmt(Stmt.Puts stmt) {
-        for (Expr expression : stmt.expressions) {
-            Object value = evaluate(expression);
-            String string = stringify(value);
-            System.out.println(string);
-        }
-        return null;
-    }
+    // @Override
+    // public Void visitPutsStmt(Stmt.Puts stmt) {
+    // for (Expr expression : stmt.expressions) {
+    // Object value = evaluate(expression);
+    // String string = stringify(value);
+    // System.out.println(string);
+    // }
+    // return null;
+    // }
 
     @Override
-    public Object visitListExpr(Expr.List expr) {
+    public Object visitListExpr(Expr.PrintList expr) {
         return evaluate(expr.right);
     }
 
@@ -255,7 +277,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return result;
     }
 
-    
     @Override
     public Object visitLiteralExpr(Expr.Literal expr) {
         return expr.value;
@@ -287,29 +308,28 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Object visitBinaryExpr(Expr.Binary expr) {
         Object left = evaluate(expr.left);
         Object right = evaluate(expr.right);
-        
+
         switch (expr.operator.type) {
             // Exponent
             case STAR_STAR:
                 checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
-                        return Math.pow((double)(Integer) left, (double)right);
+                        return Math.pow((double) (Integer) left, (double) right);
                     }
                     if (right instanceof Integer) {
-                        return Math.pow((double) left , (double) (Integer) right);
+                        return Math.pow((double) left, (double) (Integer) right);
                     }
-                    return Math.pow((double) left , (double) right);
+                    return Math.pow((double) left, (double) right);
                 }
                 if (left instanceof Integer && right instanceof Integer) {
-                    if ((int)right<0){
-                        return "1/"+(int)Math.pow((int) left , -(int) right);
+                    if ((int) right < 0) {
+                        return "1/" + (int) Math.pow((int) left, -(int) right);
                     }
-                    return (int)Math.pow((int) left , (int) right);
+                    return (int) Math.pow((int) left, (int) right);
                 }
-            // Comparison
+                // Comparison
             case GREATER:
-                checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
                         return (double) (Integer) left > (double) right;
@@ -322,8 +342,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left > (int) right;
                 }
+                if (left instanceof String && right instanceof String) {
+                    return true ? ((String) left).compareTo((String) right) > 0 : false;
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
             case GREATER_EQUAL:
-                checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
                         return (double) (Integer) left >= (double) right;
@@ -336,8 +359,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left >= (int) right;
                 }
+                if (left instanceof String && right instanceof String) {
+                    return true ? ((String) left).compareTo((String) right) >= 0 : false;
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
             case LESS:
-                checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
                         return (double) (Integer) left < (double) right;
@@ -350,8 +376,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left < (int) right;
                 }
+                if (left instanceof String && right instanceof String) {
+                    return true ? ((String) left).compareTo((String) right) < 0 : false;
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
             case LESS_EQUAL:
-                checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
                         return (double) (Integer) left <= (double) right;
@@ -364,12 +393,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left <= (int) right;
                 }
+                if (left instanceof String && right instanceof String) {
+                    return true ? ((String) left).compareTo((String) right) <= 0 : false;
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
 
             case BANG_EQUAL:
-                checkNumberOperands(expr.operator, left, right);
                 return !isEqual(left, right);
             case EQUAL_EQUAL:
-                checkNumberOperands(expr.operator, left, right);
                 return isEqual(left, right);
             // Operators
             case MINUS:
@@ -449,12 +480,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left % (int) right;
                 }
-                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");  
-                
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
+
             // case DOT_DOT:
-            //     return rangeDotDot(left, right);
+            // return rangeDotDot(left, right);
             // case DOT_DOT_DOT:
-            //     return rangeDotDotDot(left, right);
+            // return rangeDotDotDot(left, right);
         }
         // again to satisy jvm
         return null;
@@ -464,34 +495,34 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
      * Helper Methods
      */
     // private List<Object> rangeDotDot(Object left, Object right) {
-    //     if (left instanceof Integer && right instanceof Integer) {
-    //         int start = (int) left;
-    //         int end = (int) right;
+    // if (left instanceof Integer && right instanceof Integer) {
+    // int start = (int) left;
+    // int end = (int) right;
 
-    //         List<Object> result = new ArrayList<>();
-    //         for (int i = start; i <= end; i++) {
-    //             result.add(i);
-    //         }
-    //         return result;
-    //     } else {
-    //         // Handle error: Non-integer range boundaries
-    //         return null;
-    //     }
+    // List<Object> result = new ArrayList<>();
+    // for (int i = start; i <= end; i++) {
+    // result.add(i);
+    // }
+    // return result;
+    // } else {
+    // // Handle error: Non-integer range boundaries
+    // return null;
+    // }
     // }
     // private List<Object> rangeDotDotDot(Object left, Object right) {
-    //     if (left instanceof Integer && right instanceof Integer) {
-    //         int start = (int) left;
-    //         int end = (int) right;
+    // if (left instanceof Integer && right instanceof Integer) {
+    // int start = (int) left;
+    // int end = (int) right;
 
-    //         List<Object> result = new ArrayList<>();
-    //         for (int i = start; i < end; i++) {
-    //             result.add(i);
-    //         }
-    //         return result;
-    //     } else {
-    //         // Handle error: Non-integer range boundaries
-    //         return null;
-    //     }
+    // List<Object> result = new ArrayList<>();
+    // for (int i = start; i < end; i++) {
+    // result.add(i);
+    // }
+    // return result;
+    // } else {
+    // // Handle error: Non-integer range boundaries
+    // return null;
+    // }
     // }
 
     private boolean operandDoubleChecker(Object left, Object right) {
@@ -525,6 +556,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             return true;
         if (a == null)
             return false;
+        if (a instanceof Integer && b instanceof Double)
+            return (double) (Integer) a == (double) b;
+        if (b instanceof Integer && a instanceof Double)
+            return (double) (Integer) b == (double) a;
         return a.equals(b);
     }
 
@@ -705,7 +740,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                     Object value = (int) left % (int) right;
                     environment.assign(expr.name, value);
                 }
-                break;  
+                break;
             default:
         }
 
