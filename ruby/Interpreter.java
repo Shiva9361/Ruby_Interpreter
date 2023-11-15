@@ -121,13 +121,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
     @Override
     public Void visitForStmt(Stmt.For stmt) {
+        try{
         Object iterableValue = evaluate(stmt.iterable);
+      //  System.out.println(iterableValue.toString());
         
         if (iterableValue instanceof Iterable<?>) {
             for (Object element : (Iterable<?>) iterableValue) {
+               // environment.define(left.toString(), right);
+               //System.out.println(element);
                 // Create a new environment for the loop iteration
-                // Environment nestedEnv = new Environment();
-                // nestedEnv.define(stmt.variable.lexeme, element);
+                 environment.define(stmt.variable.lexeme, element);
 
                 // Execute the loop body with the new environment
                 //execute(stmt.body);
@@ -137,6 +140,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             }
         } else {
             // Handle error: Non-iterable in the for loop
+        }}
+        catch(BreakException breakException)
+        {
+            // have to add
         }
 
         return null;

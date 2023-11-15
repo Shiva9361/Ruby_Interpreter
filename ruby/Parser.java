@@ -299,6 +299,7 @@ private Stmt loopStatement(){
     try {
         if (match(IDENTIFIER)) {
             Token variable = previous();
+            System.out.println(variable.lexeme+" "+variable.type);
             if (match(IN)) {
                 Expr iterable = expression();
                 //consume(DO, "Expect 'do' after for statement.");
