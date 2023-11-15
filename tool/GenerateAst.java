@@ -83,8 +83,12 @@ public class GenerateAst {
 
         String[] fields = fieldList.split(", ");
         for (String field : fields) {
-            String name = field.split(" ")[1];
-            writer.println("\t\t\tthis." + name + " = " + name + ";");
+            System.out.println(field);
+            if (field != null) {
+                String name = field.split(" ")[1];
+                System.out.println(name);
+                writer.println("\t\t\tthis." + name + " = " + name + ";");
+            }
         }
         writer.println("\t\t}");
 
