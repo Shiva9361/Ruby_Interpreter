@@ -295,7 +295,12 @@ public class Parser {
 
     Expr condition = expression();
     while (!match(WHEN)) {
-      advance();
+      if (peek().type == NEWLINE) {
+        advance();
+      } else {
+        Ruby.error(peek().line, "expecting 'when' ");
+        break;
+      }
     }
     current--;
     while (match(WHEN)) {
