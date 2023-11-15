@@ -320,7 +320,8 @@ public class Parser {
   private Stmt printStatement(TokenType token) {
     List<Expr> value = expressionList();
     consume(NEWLINE, "Expect newline after value.");
-    return new Stmt.Print(value, token);
+    boolean type = (token == PUTS) ? true : false;
+    return new Stmt.Print(value, type);
   }
 
   // private Stmt putsStatement() {

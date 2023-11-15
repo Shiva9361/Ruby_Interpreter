@@ -159,9 +159,9 @@ abstract class Stmt {
 	}
 
 	static class Print extends Stmt {
-		Print(List<Expr> expressions, TokenType token) {
+		Print(List<Expr> expressions, boolean type) {
 			this.expressions = expressions;
-			this.type = (token == PUTS) ? true : false;
+			this.type = type;
 		}
 
 		@Override
