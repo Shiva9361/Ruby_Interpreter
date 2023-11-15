@@ -172,3 +172,26 @@ when 3
 else
   puts "Wear Any color"
 end
+
+str = "two"
+  
+# using case statement 
+case str  
+  
+# using when 
+when "one"  
+  puts 'Input is 1'
+  
+when "two"  
+  puts 'Input is 2'
+  
+when "three"  
+  puts 'Input is 3'
+  
+ when "four"  
+  puts 'Input is 4'
+  
+else  
+  puts "Default!"
+  
+end  

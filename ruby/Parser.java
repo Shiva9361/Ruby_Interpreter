@@ -294,7 +294,10 @@ public class Parser {
     List<List<Stmt>> branches = new ArrayList<>();
 
     Expr condition = expression();
-    advance();
+    while (!match(WHEN)) {
+      advance();
+    }
+    current--;
     while (match(WHEN)) {
       Expr Condition = expression();
       conditions.add(Condition);

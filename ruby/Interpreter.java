@@ -69,7 +69,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Object expression = evaluate(stmt.condition);
         int i = 0;
         for (Expr condition : stmt.conditions) {
-            if ((evaluate(condition)) == expression) {
+            if ((evaluate(condition) == expression)
+                    || evaluate(condition).toString().compareTo(expression.toString()) == 0) {
                 for (Stmt branch : stmt.branches.get(i)) {
                     execute(branch);
                 }
@@ -335,8 +336,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left > (int) right;
                 }
-                if (left instanceof String && right instanceof String){
-                    return true ? ((String)left).compareTo((String) right) >0:false;
+                if (left instanceof String && right instanceof String) {
+                    return true ? ((String) left).compareTo((String) right) > 0 : false;
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
             case GREATER_EQUAL:
@@ -352,8 +353,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left >= (int) right;
                 }
-                if (left instanceof String && right instanceof String){
-                    return true ? ((String)left).compareTo((String) right) >=0:false;
+                if (left instanceof String && right instanceof String) {
+                    return true ? ((String) left).compareTo((String) right) >= 0 : false;
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
             case LESS:
@@ -369,8 +370,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left < (int) right;
                 }
-                if (left instanceof String && right instanceof String){
-                    return true ? ((String)left).compareTo((String) right) <0:false;
+                if (left instanceof String && right instanceof String) {
+                    return true ? ((String) left).compareTo((String) right) < 0 : false;
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
             case LESS_EQUAL:
@@ -386,8 +387,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left <= (int) right;
                 }
-                if (left instanceof String && right instanceof String){
-                    return true ? ((String)left).compareTo((String) right) <=0:false;
+                if (left instanceof String && right instanceof String) {
+                    return true ? ((String) left).compareTo((String) right) <= 0 : false;
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
 
@@ -550,9 +551,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         if (a == null)
             return false;
         if (a instanceof Integer && b instanceof Double)
-            return (double)(Integer) a == (double)b;
+            return (double) (Integer) a == (double) b;
         if (b instanceof Integer && a instanceof Double)
-            return (double)(Integer) b == (double)a;
+            return (double) (Integer) b == (double) a;
         return a.equals(b);
     }
 
