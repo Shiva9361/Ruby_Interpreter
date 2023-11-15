@@ -69,9 +69,9 @@ public class Ruby {
         Scanner sc = new Scanner(source);
         List<Token> tokens = sc.scanTokens();
         // Uncomment to check tokens generated
-        for (Token token : tokens) {
+        /*for (Token token : tokens) {
             System.out.println(token);
-        }
+        }*/
         System.out.println("-------------");
         Parser parser = new Parser(tokens);
         List<Stmt> statements = parser.parse();

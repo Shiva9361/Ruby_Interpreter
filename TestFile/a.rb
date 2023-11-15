@@ -1,3 +1,4 @@
+=begin
 # jregiigrope
 # puts 16.766%2
 # puts 35-(7/9-4*10+16-1)*69.0,"\n",5.1>3.1,5>3,5>3.1,5.1<3.1,5<3,5<3.1,5.1>=3.1,5>=3,5>=3.1,5.1<=3.1,5<=3,5<=3.1,-1>-1.9
@@ -171,30 +172,4 @@ when 3
   puts "Wear Black"
 else
   puts "Wear Any color"
-end
-
-str = "two"
-  
-# using case statement 
-case str  
-  
-# using when 
-when "one"  
-  puts 'Input is 1'
-  
-when "two"  
-  puts 'Input is 2'
-  
-when "three"  
-  puts 'Input is 3'
-  
- when "four"  
-  puts 'Input is 4'
-  
-else  
-  puts "Default!"
-  
-end  
-for a in 1...5
-    puts a*10.9
 end

@@ -13,8 +13,22 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             super(message);
         }
     }
+    final Environment globals = new Environment();
+    private Environment environment = globals;
 
-    private Environment environment = new Environment();
+    Interpreter() {
+        globals.define("clock", new RubyCallable() {
+          @Override
+          public int arity() { return 0; }
+  @Override
+          public Object call(Interpreter interpreter,
+                             List<Object> arguments) {
+            return (double)System.currentTimeMillis() / 1000.0;
+          }
+  @Override
+          public String toString() { return "<native fn>"; }
+        });
+      }
 
     void interpret(List<Stmt> statements) {
         try {
@@ -39,6 +53,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitFunctionStmt(Stmt.Function stmt) {
+      RubyFunction function = new RubyFunction(stmt,environment);
+      environment.define(stmt.name.lexeme, function);
+      return null;
+}
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
         // if (isTruthy(evaluate(stmt.condition))) {
@@ -214,6 +234,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             }
         }
         return null;
+    }
+ @Override
+    public Void visitReturnStmt(Stmt.Return stmt) {
+      Object value = null;
+      if (stmt.value != null) value = evaluate(stmt.value);
+      throw new Return(value);
     }
 
     // @Override
@@ -489,6 +515,27 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         // again to satisy jvm
         return null;
+    }
+
+    
+    @Override
+    public Object visitCallExpr(Expr.Call expr) {
+      Object callee = evaluate(expr.callee);
+      List<Object> arguments = new ArrayList<>();
+      for (Expr argument : expr.arguments) {
+        arguments.add(evaluate(argument));
+      }
+      if (!(callee instanceof RubyCallable)) {
+        throw new RuntimeError(expr.paren,
+            "Can only call functions and classes.");
+      }
+      RubyCallable function = (RubyCallable)callee;
+      if (arguments.size() != function.arity()) {
+        throw new RuntimeError(expr.paren, "Expected " +
+            function.arity() + " arguments but got " +
+            arguments.size() + ".");
+      }
+      return function.call(this, arguments);
     }
 
     /*

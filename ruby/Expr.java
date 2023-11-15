@@ -21,6 +21,8 @@ abstract class Expr {
 		R visitLogicalExpr(Logical expr);
 
 		R visitRangeExpr(Expr.Range expr);
+		
+		R visitCallExpr(Call expr);
 	}
 
 	public static class Range extends Expr {
@@ -99,7 +101,7 @@ abstract class Expr {
 			return visitor.visitGroupingExpr(this);
 		}
 
-		final Expr expression;
+		final Expr expression;	
 	}
 
 	static class Literal extends Expr {
@@ -147,6 +149,23 @@ abstract class Expr {
 		final Expr right;
 	}
 
+	static class Call extends Expr {
+		final Expr callee;
+		final Token paren;
+		final List<Expr> arguments ;
+
+		Call(Expr callee, Token paren, List<Expr> arguments) {
+			this.callee = callee;
+			this.paren = paren;
+			this.arguments = arguments;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitCallExpr(this);
+		}
+	}
+	
 	static class Variable extends Expr {
 		Variable(Token name) {
 			this.name = name;
