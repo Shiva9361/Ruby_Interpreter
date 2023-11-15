@@ -252,6 +252,9 @@ public class Scanner {
             case '"':
                 string();
                 break;
+            case '\'':
+                string2();
+                break;
 
             /*
              * a reserved word is an identifier, it’s just one that has been claimed by
@@ -326,6 +329,39 @@ public class Scanner {
         }
 
         // This is for the closing "
+        advance();
+
+        String value = source.substring(start + 1, current - 1);
+        /*
+         * Java reads the bytes and adds extra slash
+         * Soo need to remove
+         * \" \\"
+         */
+        value = value.replace("\\n", "\n");
+        value = value.replace("\\t", "\t");
+        value = value.replace("\\r", "\r");
+        value = value.replace("\\f", "\f");
+        // value = value.replace(, "\n");
+        value = value.replace("\\'", "\'");
+        value = value.replace("\\\\", "\\");
+        // System.out.println(value+"scanner");
+        addToken(STRING, value);
+    }
+    private void string2() {
+        /*
+         * Ruby supports multiline strings...
+         */
+        while (peek() != '\'' && !isAtEnd()) {
+            if (peek() == '\n')
+                line++;
+            advance();
+        }
+        if (isAtEnd()) {
+            Ruby.error(line, "Unterminated String");
+            return;
+        }
+
+        // This is for the closing '
         advance();
 
         String value = source.substring(start + 1, current - 1);

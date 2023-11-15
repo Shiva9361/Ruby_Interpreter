@@ -323,7 +323,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 }
                 // Comparison
             case GREATER:
-                checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
                         return (double) (Integer) left > (double) right;
@@ -336,8 +335,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left > (int) right;
                 }
+                if (left instanceof String && right instanceof String){
+                    return true ? ((String)left).compareTo((String) right) >0:false;
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
             case GREATER_EQUAL:
-                checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
                         return (double) (Integer) left >= (double) right;
@@ -350,8 +352,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left >= (int) right;
                 }
+                if (left instanceof String && right instanceof String){
+                    return true ? ((String)left).compareTo((String) right) >=0:false;
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
             case LESS:
-                checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
                         return (double) (Integer) left < (double) right;
@@ -364,8 +369,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left < (int) right;
                 }
+                if (left instanceof String && right instanceof String){
+                    return true ? ((String)left).compareTo((String) right) <0:false;
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
             case LESS_EQUAL:
-                checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
                         return (double) (Integer) left <= (double) right;
@@ -378,12 +386,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof Integer && right instanceof Integer) {
                     return (int) left <= (int) right;
                 }
+                if (left instanceof String && right instanceof String){
+                    return true ? ((String)left).compareTo((String) right) <=0:false;
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
 
             case BANG_EQUAL:
-                checkNumberOperands(expr.operator, left, right);
                 return !isEqual(left, right);
             case EQUAL_EQUAL:
-                checkNumberOperands(expr.operator, left, right);
                 return isEqual(left, right);
             // Operators
             case MINUS:
@@ -539,6 +549,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             return true;
         if (a == null)
             return false;
+        if (a instanceof Integer && b instanceof Double)
+            return (double)(Integer) a == (double)b;
+        if (b instanceof Integer && a instanceof Double)
+            return (double)(Integer) b == (double)a;
         return a.equals(b);
     }
 
