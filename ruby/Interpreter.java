@@ -13,6 +13,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             super(message);
         }
     }
+
+    private static class NextException extends RuntimeException {
+        NextException(String message) {
+            super(message);
+        }
+    }
+
     final Environment globals = new Environment();
     private Environment environment = globals;
 
@@ -38,9 +45,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         } catch (RuntimeError error) {
             Ruby.runtimeError(error);
         }
-        // exception for the break statement should also be handled here too
+        // exception for the break statement should be handled here 
         catch (BreakException breakException) {
             System.out.println(breakException.getMessage());
+        }
+
+        catch (NextException nextException) {
+            System.out.println(nextException.getMessage());
         }
     }
 
@@ -110,13 +121,21 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitWhileStmt(Stmt.While stmt) {
         try {
             while (isTruth(evaluate(stmt.condition))) {
-                for (Stmt statement : stmt.body) {
-                    execute(statement);
-                }
+                    for (Stmt statement : stmt.body) {
+                    try{
+                        execute(statement);
+                    }
+                     catch (NextException nextException){
+                          break;
+                    }
+              }
             }
+           
+            
         } catch (BreakException breakException) {
             // handle the break stmt
         }
+       
         return null;
 
     }
@@ -126,10 +145,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     }
 
+    public Void visitNextStmt(Stmt.Next stmt) {
+         throw new NextException("Invalid next");
+    }
+
     public Void visitUntilStmt(Stmt.Until stmt) {
         while (!isTruth(evaluate(stmt.condition))) {
-            for (Stmt statement : stmt.body) {
-                execute(statement);
+            for (Stmt statement : stmt.body) {               
+                        execute(statement);           
             }
         }
         return null;
@@ -137,19 +160,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     void executeLoop(List<Stmt> body, Environment environment) {
         Environment previous = this.environment;
-        System.out.println("changed to new");
+        //System.out.println("changed to new");
         try {
             this.environment = environment;
             while (true) {
                 for (Stmt statement : body) {
-                    execute(statement);
+                        execute(statement);
                 }
             }
         } catch (BreakException breakException) {
             // handle the break stmt
         } finally {
             this.environment = previous;
-            System.out.println("changed to previous");
+            //System.out.println("changed to previous");
         }
     }
 
@@ -166,14 +189,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         if (iterableValue instanceof Iterable<?>) {
             for (Object element : (Iterable<?>) iterableValue) {
                // environment.define(left.toString(), right);
-               //System.out.println(element);
+               System.out.println(element);
                 // Create a new environment for the loop iteration
                  environment.define(stmt.variable.lexeme, element);
 
                 // Execute the loop body with the new environment
                 // execute(stmt.body);
                 for (Stmt statement : stmt.body) {
-                    execute(statement);
+                   try{
+                        execute(statement);
+                    }
+                     catch (NextException nextException){
+                          continue;
+                    }
                 }
             }
         } else {

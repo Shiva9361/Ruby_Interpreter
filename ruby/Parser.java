@@ -78,9 +78,13 @@ public class Parser {
     while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, DOT_DOT, DOT_DOT_DOT)) {
       Token operator = previous();
       Expr right = term();
-      if (operator.type == DOT_DOT || operator.type == DOT_DOT_DOT) {
+      if (operator.type == DOT_DOT_DOT) {
         expr = new Expr.Range(expr, right, false);
-      } else {
+      } 
+      else if (operator.type == DOT_DOT) {
+        expr = new Expr.Range(expr, right, true);
+      } 
+      else {
         expr = new Expr.Binary(expr, operator, right);
       }
     }
@@ -253,12 +257,19 @@ private Expr call() {
     if (match(CASE)) {
       return caseStatement();
     }
-
+    if (match(NEXT)) {
+      return nextStatement();
+    }
     return expressionStatement();
   }
 
   private Stmt breakStatement() {
     return new Stmt.Break();
+  }
+
+  private Stmt nextStatement()
+  {
+    return new Stmt.Next();
   }
 
   private Stmt unlessStatement() {
