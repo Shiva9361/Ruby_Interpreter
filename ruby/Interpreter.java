@@ -189,7 +189,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         if (iterableValue instanceof Iterable<?>) {
             for (Object element : (Iterable<?>) iterableValue) {
                // environment.define(left.toString(), right);
-               System.out.println(element);
+               // System.out.println(element);
                 // Create a new environment for the loop iteration
                  environment.define(stmt.variable.lexeme, element);
 
