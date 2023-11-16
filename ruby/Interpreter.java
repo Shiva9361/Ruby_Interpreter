@@ -254,7 +254,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         for (Expr expression : stmt.expressions) {
             Object value = evaluate(expression);
-            String string = stringify(value);
+            String string = value!=null? stringify(value):"\0";
             if (stmt.type) {
                 System.out.println(string);
             } else {
