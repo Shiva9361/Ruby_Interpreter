@@ -178,10 +178,12 @@ end
 puts "i"
 val=val+1
 end
+a=4
 for b in 1...6
   puts b
-#   if a==4
-#     next
-#   end
-# puts a
+  if a==4
+    puts "hi"
+    next
+  end
+puts a
 end
