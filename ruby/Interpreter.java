@@ -13,7 +13,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             super(message);
         }
     }
-
+    //This class extends RunTimeException to throw an exception if we encounter a next statement 
     private static class NextException extends RuntimeException {
         NextException(String message) {
             super(message);
@@ -45,7 +45,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         } catch (RuntimeError error) {
             Ruby.runtimeError(error);
         }
-        // exception for the break statement should be handled here 
+        //exception handling for break and next statements
         catch (BreakException breakException) {
             System.out.println(breakException.getMessage());
         }
@@ -135,12 +135,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
 
     }
-
+    //visit method implementation for break statement 
     public Void visitBreakStmt(Stmt.Break stmt) {
         throw new BreakException("Invalid break");
 
     }
-
+    //visit method implementation for next statement
     public Void visitNextStmt(Stmt.Next stmt) {
          throw new NextException("Invalid next");
     }
@@ -171,8 +171,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             //System.out.println("changed to previous");
         }
     }
-
+    //visit method implementation for 'loop' statement 
     public Void visitLoopStmt(Stmt.Loop stmt) {
+        
         executeLoop(stmt.body, new Environment(environment));
         return null;
     }

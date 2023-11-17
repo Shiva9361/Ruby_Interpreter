@@ -3,18 +3,29 @@ package ruby;
 import java.util.ArrayList;
 import java.util.List;
 import static ruby.TokenType.*;
-
+/*
+ * Parser class of the interpreter
+ */
 public class Parser {
   private static class ParseError extends RuntimeException {
   }
-
+  /*
+   * The tokens generated from scanner is fed to the parser
+   */
   private final List<Token> tokens;
   private int current = 0;
-
+  /*
+   * The parser is initialized with the list of tokens 
+   * to be parsed
+   */
   Parser(List<Token> tokens) {
     this.tokens = tokens;
   }
-
+  /*
+   * the parser parses the tokens and returns a list of statements 
+   * these statements are then given to the interpreter for final 
+   * interpretation
+   */
   List<Stmt> parse() {
     List<Stmt> statements = new ArrayList<>();
     while (!isAtEnd()) {
@@ -26,6 +37,10 @@ public class Parser {
   /*
    * Expressions
    */
+  /*
+   * Using the recursive decent parsing style.
+   */
+
   private Expr expression() {
     return assignment();
   }
@@ -42,7 +57,10 @@ public class Parser {
 
     return exprs;
   }
-
+  /*
+   * Statement list to group statements in the if 
+   * and else branches and execute them
+   */
   private List<Stmt> statementList() {
     List<Stmt> statements = new ArrayList<>();
     do {
@@ -52,7 +70,10 @@ public class Parser {
     current--;
     return statements;
   }
-
+  /*
+   * Statement list to group statements in case 
+   * for when and else branches and execute them
+   */
   private List<Stmt> statementList2() {
     List<Stmt> statements = new ArrayList<>();
     do {
@@ -62,7 +83,11 @@ public class Parser {
     current--;
     return statements;
   }
-
+  /*
+   * Identifies the specified operator in the 
+   * match function and return a expression
+   * Also go deeper into the recursive decent 
+   */
   private Expr equality() {
     Expr expr = comparison();
     while (match(BANG_EQUAL, EQUAL_EQUAL)) {
@@ -72,7 +97,11 @@ public class Parser {
     }
     return expr;
   }
-
+  /*
+   * Identifies the specified operator in the 
+   * match function and return a expression
+   * Also go deeper into the recursive decent 
+   */
   private Expr comparison() {
     Expr expr = term();
     while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, DOT_DOT, DOT_DOT_DOT)) {
@@ -90,7 +119,11 @@ public class Parser {
     }
     return expr;
   }
-
+  /*
+   * Identifies the specified operator in the 
+   * match function and return a expression
+   * Also go deeper into the recursive decent 
+   */
   private Expr term() {
     Expr expr = factor();
     while (match(MINUS, PLUS)) {
@@ -100,7 +133,11 @@ public class Parser {
     }
     return expr;
   }
-
+  /*
+   * Identifies the specified operator in the 
+   * match function and return a expression
+   * Also go deeper into the recursive decent 
+   */
   private Expr factor() {
     Expr expr = power();
     while (match(SLASH, STAR, MOD)) {
@@ -110,7 +147,11 @@ public class Parser {
     }
     return expr;
   }
-
+  /*
+   * Identifies the specified operator in the 
+   * match function and return a expression
+   * Also go deeper into the recursive decent 
+   */
   private Expr power() {
     Expr expr = unary();
     while (match(STAR_STAR)) {
@@ -120,7 +161,11 @@ public class Parser {
     }
     return expr;
   }
-
+  /*
+   * Identifies the specified operator in the 
+   * match function and return a expression
+   * Also go deeper into the recursive decent 
+   */
   private Expr unary() {
     if (match(BANG, MINUS)) {
       Token operator = previous();
@@ -135,9 +180,9 @@ private Expr finishCall(Expr callee) {
   List<Expr> arguments = new ArrayList<>();
   if (!check(RIGHT_PAREN)) {
     do {
-      if (arguments.size() >= 255) {
-        error(peek(), "Can't have more than 255 arguments.");
-      }
+      // if (arguments.size() >= 255) {
+      //   error(peek(), "Can't have more than 255 arguments.");
+      // }
       arguments.add(expression());
     } while (match(COMMA));
   }
@@ -157,7 +202,9 @@ private Expr call() {
   }
   return expr;
 }
-
+  /*
+   * leaf node of recursive decent
+   */
   private Expr primary() {
     if (match(FALSE))
       return new Expr.Literal(false);
@@ -203,7 +250,7 @@ private Expr call() {
     }
   }
 
-  // this nmethod id used for parallel assignment parses variables to one list and target to another list
+  // this method id used for parallel assignment parses variables to one list and target to another list
   private Stmt varDeclaration() {
     List<Token> name = new ArrayList<>();
     while (!match(EQUAL)) {
@@ -529,58 +576,59 @@ private Expr call() {
     }
     return false;
   }
-
+  // Expects and tries to find a particular token 
+  // if that token is not found, throw error
   private Token consume(TokenType type, String message) {
     if (check(type))
       return advance();
     throw error(peek(), message);
   }
-
+  // checks if the next token is what we are expecting and return 
+  // true or false for the same
   private boolean check(TokenType type) {
     if (isAtEnd())
       return false;
     return peek().type == type;
   }
-
+  // Increment current
   private Token advance() {
     if (!isAtEnd())
       current++;
     return previous();
   }
-
+  // check if at end
   private boolean isAtEnd() {
     return peek().type == EOF;
   }
-
+  // returns the next next token 
   private Token superPeek() {
     if (!isAtEnd()) {
       return tokens.get(current + 1);
     }
     return null;
   }
-
+  // returns next token without incrementing current
   private Token peek() {
     return tokens.get(current); // returns without incrementing
   }
-
+  // return the previous token 
   private Token previous() {
     return tokens.get(current - 1);
   }
-
+  // Error method
   private ParseError error(Token token, String message) {
     Ruby.error(token, message);
     return new ParseError();
   }
-
+  // Synchronize helps to get the compiler of the panic state 
+  // helpful for error recovery
   private void synchronize() {
     advance();
     while (!isAtEnd()) {
-      if (previous().type == SEMICOLON)
+      if (previous().type == NEWLINE)
         return;
       switch (peek().type) {
         case CLASS:
-          // case FUN:
-          // case VAR:
         case FOR:
         case IF:
         case WHILE:
