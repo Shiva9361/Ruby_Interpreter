@@ -40,15 +40,29 @@ An barebone Ruby Interpreter implemented in JAVA
 
 ## **Explanation:**
 
-This is a high level explanation, for further details, check
+::warn:: This is a high level explanation, for further details, check the code for comments
+First, we read the file or the data fed into the interpreter
 
 
 ## **Challenges:**
 
-1. Absence of semilcolon
-2. 
+1. Absence of semicolon
+2. Parallel Assignment
+3. 
 
 ## **Learning:**
+
+1. Lexical analysis
+    - learnt to differntiate between differnt lexemes
+    - learnt to create tokens from source code
+2. Parsing
+    - learnt recursive decent parsing style
+    - learnt to generate parse tree
+    - learnt how the type data of one language can be implemented in another language that is interpreting it
+    - learnt to implement operator precedence
+
+3. Interpretation
+    - learnt to use visitor pattern
 
 [^1]: variable declaration is not possible in Ruby.
 [^2]: Step uses method of number class and as such has not been implemented
