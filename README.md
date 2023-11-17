@@ -14,7 +14,7 @@ An barebone Ruby Interpreter implemented in JAVA
         4. Exponentiation (**) 
     2. Logical Operators
 3. Variable Assignment [^1]
-4. Parallel Assignment ==**a=b=1**==
+4. Parallel Assignment **(a=b=1)**
 5. Print Statement
 6. Puts Statement
 7. Global Variables
@@ -40,6 +40,7 @@ An barebone Ruby Interpreter implemented in JAVA
 
 ## **Explanation:**
 
+This is a high level explanation, for further details, check
 
 
 ## **Challenges:**
