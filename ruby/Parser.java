@@ -485,6 +485,12 @@ private Expr call() {
       return new Stmt.Function(name, parameters, body);
   }
   */
+
+  /*
+   * When we encounter def keyword, we call function. 
+   * That corresponds to the function grammar rule 
+   */
+
   private Stmt.Function function(String kind) {
     List<Token> parameters = new ArrayList<>();
     Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
