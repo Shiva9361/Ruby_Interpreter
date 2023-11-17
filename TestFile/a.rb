@@ -35,23 +35,6 @@ d =d*4
 puts d
 fg,$v,C = 10,11,12
 puts fg,$v,C
-begin
-e =1*C
-print e,"\n"
-begin
-e=2
-$as,x5 = 65,89
-print e,"\n"
-begin
-$ad=cq=67
-e=3
-asdfg = 1000000
-print e,"\n"
-end
-print e," ",$ad,"\n"
-end
-print e,"\n"
-end
 puts $as,$ad
 
 user_input =-1
