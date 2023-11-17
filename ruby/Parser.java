@@ -259,18 +259,16 @@ public class Parser {
       Token varibleName = consume(IDENTIFIER, "??");
       name.add(varibleName);
     }
-
     List<Expr> initializer = new ArrayList<>();
-
     initializer = expressionList();
-
     consume(NEWLINE, "Expect newline after value.");
     if (name.size() != initializer.size()) {
       throw new RuntimeError(null, "insufficient arguments");
     }
     return new Stmt.Var(name, initializer);
   }
-
+  //this method is used identitify he type of statement
+  // and parse them accordingly
   private Stmt statement() {
     if (match(UNLESS))
       return unlessStatement();
@@ -279,10 +277,6 @@ public class Parser {
     }
     if (match(PRINT, PUTS))
       return printStatement(previous().type);
-    // if (match(PUTS))
-    // return putsStatement();
-    if (match(BEGIN))
-      return new Stmt.Block(block());
     if (match(WHILE)) {
       return whileStatement();
     }
@@ -446,44 +440,15 @@ public class Parser {
   private Stmt returnStatement() {
     Token keyword = previous();
     Expr value = null;
-    //if (!check(SEMICOLON)) {
       value = expression();
-    //}
-    //consume(SEMICOLON, "Expect ';' after return value.");
     return new Stmt.Return(keyword, value);
   }
-  // private Stmt putsStatement() {
-  // List<Expr> value = expressionList();
-  // consume(NEWLINE, "Expect newline after value.");
-  // return new Stmt.Print(value, PUTS);
-  // }
 
   private Stmt expressionStatement() {
     Expr expr = expression();
     consume(NEWLINE, "Expect newline after value.");
     return new Stmt.Expression(expr);
   }
-
-  /*private Stmt.Function function(String kind) {
-    List<Token> parameters = new ArrayList<>();
-    Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
-    consume(LEFT_PAREN, "Expect '(' after " + kind + " name.");
-      //List<Token> parameters = new ArrayList<>();
-      if (!check(RIGHT_PAREN)) {
-        do {
-          if (parameters.size() >= 255) {
-            error(peek(), "Can't have more than 255 parameters.");
-          }
-          parameters.add(
-              consume(IDENTIFIER, "Expect parameter name."));
-        } while (match(COMMA));
-      }
-      consume(RIGHT_PAREN, "Expect ')' after parameters.");
-      //consume(LEFT_BRACE, "Expect '{' before " + kind + " body.");
-      List<Stmt> body = block();
-      return new Stmt.Function(name, parameters, body);
-  }
-  */
 
   /*
    * When we encounter def keyword, we call function. 

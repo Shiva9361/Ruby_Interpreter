@@ -7,12 +7,13 @@ import java.util.List;
 import java.lang.Math;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+    //This class extends RunTimeException to throw an exception if we encounter a break statement 
     private static class BreakException extends RuntimeException {
         BreakException(String message) {
             super(message);
         }
     }
-    //This class extends RunTimeException to throw an exception if we encounter a next statement 
+    //throw a next exception if we encounter a next statement 
     private static class NextException extends RuntimeException {
         NextException(String message) {
             super(message);
@@ -118,9 +119,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-    // visitor implementation of while statement
+    //this function implements the visit method for while statement
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
+        //as long as the condition is true, it will execute the statements in the while loop's body
         try {
             while (isTruth(evaluate(stmt.condition))) {
                     for (Stmt statement : stmt.body) {
@@ -131,9 +133,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                           break;
                     }
               }
-            }
-           
-            
+            }   
         } catch (BreakException breakException) {
             // do nothing just exit
         }
@@ -142,15 +142,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     }
     //visit method implementation for break statement 
+    @Override
     public Void visitBreakStmt(Stmt.Break stmt) {
         throw new BreakException("Invalid break");
 
     }
     //visit method implementation for next statement
+    @Override
     public Void visitNextStmt(Stmt.Next stmt) {
          throw new NextException("Invalid next");
     }
-
+    //this function implements the visit method for until statement
+    //similar to while it will execute the statements in the body of the until loop until the condition becomes true
+    @Override
     public Void visitUntilStmt(Stmt.Until stmt) {
         while (!isTruth(evaluate(stmt.condition))) {
             for (Stmt statement : stmt.body) {               
@@ -159,10 +163,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-
+    //this method creates a new environment and executes the statements in the body of the loop
     void executeLoop(List<Stmt> body, Environment environment) {
         Environment previous = this.environment;
-        //System.out.println("changed to new");
         try {
             this.environment = environment;
             while (true) {
@@ -174,34 +177,30 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             // handle the break stmt
         } finally {
             this.environment = previous;
-            //System.out.println("changed to previous");
         }
     }
     //visit method implementation for 'loop' statement 
     public Void visitLoopStmt(Stmt.Loop stmt) {
-        
         executeLoop(stmt.body, new Environment(environment));
         return null;
     }
-
+    // visit method for for statement
     @Override
     public Void visitForStmt(Stmt.For stmt) {
         try{
+        // eveluating iterable expression to get the values to iterate over
         Object iterableValue = evaluate(stmt.iterable);
 
         if (iterableValue instanceof Iterable<?>) {
             for (Object element : (Iterable<?>) iterableValue) {
-               // environment.define(left.toString(), right);
-               // System.out.println(element);
-                // Create a new environment for the loop iteration
-                environment.define(stmt.variable.lexeme, element);
-
-                // Execute the loop body with the new environment
-                // execute(stmt.body);
+                 // defining the loop variable in its scope
+                 environment.define(stmt.variable.lexeme, element);
+                // executing the for each loop statement
                 for (Stmt statement : stmt.body) {
                    try{
                         execute(statement);
                     }
+                    // implementation of next statement 
                      catch (NextException nextException){
                           break;
                     }
@@ -282,13 +281,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
      * Expressions
      */
     // the token already has the value
+    //this function implements the visit method for range expression
+    //during parsing itself we will decide whether the right value of the operand is inclusive or not depending on the token type
+    //then we will execute the statements in the body of the for loop 
     @Override
     public Object visitRangeExpr(Expr.Range expr) {
         Object left = evaluate(expr.left);
         Object right = evaluate(expr.right);
 
         if (!(left instanceof Integer) || !(right instanceof Integer)) {
-            // Handle error: Non-integer range boundaries
             return null;
         }
 
