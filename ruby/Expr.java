@@ -1,8 +1,9 @@
 package ruby;
 
 import java.util.List;
-
+// Abstract base class for implementing  expression types in Ruby AST
 abstract class Expr {
+    // interface visitor for implementing visitors pattern.
 	interface Visitor<R> {
 		R visitAssignExpr(Assign expr);
 
@@ -24,7 +25,7 @@ abstract class Expr {
 		
 		R visitCallExpr(Call expr);
 	}
-
+    // range expression implementation
 	public static class Range extends Expr {
 		public final Expr left;
 		public final Expr right;
@@ -41,7 +42,7 @@ abstract class Expr {
 			return visitor.visitRangeExpr(this);
 		}
 	}
-
+    // assignment expression implementation
 	static class Assign extends Expr {
 		Assign(Token name, Token operator, Expr value) {
 			this.name = name;
@@ -58,7 +59,7 @@ abstract class Expr {
 		final Token operator;
 		final Expr value;
 	}
-
+    // printlist expression implementation
 	static class PrintList extends Expr {
 		PrintList(Expr left, Expr right) {
 			this.left = left;
@@ -73,7 +74,7 @@ abstract class Expr {
 		final Expr left;
 		final Expr right;
 	}
-
+    // binary expression implementation
 	static class Binary extends Expr {
 		Binary(Expr left, Token operator, Expr right) {
 			this.left = left;
@@ -90,7 +91,7 @@ abstract class Expr {
 		final Token operator;
 		final Expr right;
 	}
-
+    // grouping expression implementation
 	static class Grouping extends Expr {
 		Grouping(Expr expression) {
 			this.expression = expression;
@@ -103,7 +104,7 @@ abstract class Expr {
 
 		final Expr expression;	
 	}
-
+    // literal expression implementation
 	static class Literal extends Expr {
 		Literal(Object value) {
 			this.value = value;
@@ -116,7 +117,7 @@ abstract class Expr {
 
 		final Object value;
 	}
-
+    // unary expression implementation
 	static class Unary extends Expr {
 		Unary(Token operator, Expr right) {
 			this.operator = operator;
@@ -131,7 +132,7 @@ abstract class Expr {
 		final Token operator;
 		final Expr right;
 	}
-
+    // logical expression implementation
 	static class Logical extends Expr {
 		Logical(Expr left, Token operator, Expr right) {
 			this.left = left;
@@ -148,7 +149,7 @@ abstract class Expr {
 		final Token operator;
 		final Expr right;
 	}
-
+    // function call expression implementation
 	static class Call extends Expr {
 		final Expr callee;
 		final Token paren;
@@ -165,7 +166,7 @@ abstract class Expr {
 			return visitor.visitCallExpr(this);
 		}
 	}
-	
+    // variable declaration expression implementation	
 	static class Variable extends Expr {
 		Variable(Token name) {
 			this.name = name;
