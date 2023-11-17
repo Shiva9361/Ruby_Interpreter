@@ -5,16 +5,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.temporal.TemporalAdjuster;
 import java.util.List;
-
+/*
+ * The main entry class of the interpreter
+ */
 public class Ruby {
     private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
 
+    /*
+     * The entry point of the program 
+     * Gets arguments passed in command line 
+     * and acts accordingly
+     */
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
             System.out.println("Usage: JRuby [script]");
@@ -26,7 +31,10 @@ public class Ruby {
             runPrompt();
         }
     }
-
+    /*
+     * Wrapper method to interpret code from a file
+     * Internally reads the data from the file and calls the run method
+     */
     // Running the entire file
     private static void runFile(String path) throws IOException {
         // Path.get(path) - converts path string to path object
@@ -39,7 +47,10 @@ public class Ruby {
         if (hadRuntimeError)
             System.exit(70);
     }
-
+    /*
+     * Wrapper method to interpret code in interactive mode
+     * Internally reads a given line and calls the run method
+     */
     // Running line by line
     private static void runPrompt() throws IOException {
 
@@ -60,11 +71,19 @@ public class Ruby {
             String line = reader.readLine();
             if (line == null)
                 break;
+            // Manualy add a newline
             run(line + "\n");
+            //So that the interactive shell goes on 
             hadError = false;
         }
     }
-
+    /*
+     * This is the method that actually executes the code
+     * Uses the scanner class to generate all tokens
+     * Now these tokens are passed to the parser 
+     * To generate a parse tree
+     * This parse tree is then finally given to interpreter. 
+     */
     private static void run(String source) {
         Scanner sc = new Scanner(source);
         List<Token> tokens = sc.scanTokens();
@@ -82,16 +101,23 @@ public class Ruby {
         // System.out.println(new AstPrinter().print(expression));
     }
 
-    // Error Handling
+    /*
+     * Basic Error Handling 
+     */
     static void error(int line, String message) {
         report(line, "", message);
     }
-
+    /*
+     * Method to report error 
+     * And prevents the program from interpreting further
+     */
     private static void report(int line, String where, String message) {
         System.err.println("[line " + line + "] Error" + where + ": " + message);
         hadError = true;
     }
-
+    /*
+     * Basic error report
+     */
     static void error(Token token, String message) {
         if (token.type == TokenType.EOF) {
             report(token.line, " at end", message);
@@ -99,7 +125,9 @@ public class Ruby {
             report(token.line, " at '" + token.lexeme + "'", message);
         }
     }
-
+    /*
+     * Method for runtime error
+     */
     static void runtimeError(RuntimeError error) {
         System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
         hadRuntimeError = true;
