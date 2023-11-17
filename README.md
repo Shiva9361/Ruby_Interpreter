@@ -14,7 +14,8 @@
         - Division with floating point and integer(/) 
         - Exponentiation (**) 
     - Logical Operators
-        - 
+        - and (and, &&)
+        - or (or, ||)
 3. Variable Assignment [^1]
 4. Parallel Assignment **(a=b=1)**
 5. Print Statement
@@ -69,15 +70,16 @@
 
 ## **Learning:**
 
-1. Lexical analysis
+1. BNF usage
+2. Lexical analysis
     - learnt to differntiate between differnt lexemes
     - learnt to create tokens from source code
-2. Parsing
+3. Parsing
     - learnt recursive decent parsing style
     - learnt to generate parse tree
     - learnt how the type data of one language can be implemented in another language that is interpreting it
     - learnt to implement operator precedence
-3. Interpretation
+4. Interpretation
     - learnt to use visitor pattern
     - learnt how functions can be handled 
     - learnt how a interpreter works in the backend
