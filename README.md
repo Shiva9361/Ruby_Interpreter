@@ -40,7 +40,7 @@ An barebone Ruby Interpreter implemented in JAVA
 
 ## **Explanation:**
 
-::warn:: This is a high level explanation, for further details, check the code for comments
+:warning: This is a high level explanation, for further details, check the code for comments :warning:
 First, we read the file or the data fed into the interpreter
 
 
