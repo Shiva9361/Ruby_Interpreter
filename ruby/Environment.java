@@ -5,8 +5,8 @@ import java.util.Map;
 
 class Environment {
     private final Map<String, Object> values = new HashMap<>();
-    final Environment enclosing;
-
+    final Environment enclosing;// for linking scopes together
+// two constructors first one is is for global scope , second one for remaining scopes as we  need to link it with prviously existing scope
     Environment() {
         enclosing = null;
     }
@@ -14,13 +14,8 @@ class Environment {
     Environment(Environment enclosing) {
         this.enclosing = enclosing;
     }
-
+// this method returns the value of variables present in existing and background scope throws error if varible is not defined or assigned previosly
     Object get(Token name) {
-        // for (Map.Entry<String, Object> entry : values.entrySet()) {
-        // String key = entry.getKey();
-        // String value = entry.getValue().toString();
-        // System.out.println("Key: " + key + ", Value: " + value);
-        // }
         if (values.containsKey(name.lexeme)) {
             return values.get(name.lexeme);
         }
@@ -32,7 +27,7 @@ class Environment {
         throw new RuntimeError(name,
                 "Undefined variable '" + name.lexeme + "'.");
     }
-
+// this method assign the value to previously defined variables and thros error when it is not previously assigned
     void assign(Token name, Object value) {
         if (values.containsKey(name.lexeme) && !(name.lexeme.charAt(0) >= 'A' && name.lexeme.charAt(0) <= 'Z')) {
             values.put(name.lexeme, value);
@@ -50,7 +45,7 @@ class Environment {
         throw new RuntimeError(name,
                 "Undefined variable '" + name.lexeme + "'.");
     }
-
+//defines the variable for first assignment and throws error when constant is not defined static scopes or if it is already defined
     void define(String name, Object value) {
         if (name.charAt(0) == '$' && enclosing != null) {
             values.put(name, value);
