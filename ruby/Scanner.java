@@ -429,7 +429,6 @@ public class Scanner {
                     while (isAlpha(peek()))
                     advance();
                     String text2 = source.substring(end, current);
-                    System.out.println(text2);
                     if (text2.compareTo("=end")==0){
                         return true;
                     }
