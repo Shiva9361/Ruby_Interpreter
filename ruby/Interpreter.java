@@ -69,14 +69,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       RubyFunction function = new RubyFunction(stmt,environment);
       environment.define(stmt.name.lexeme, function);
       return null;
-}
+    }
+    // this function implements the if statement it checks which condition is correct and implements the branch statements corresponding it
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
-        // if (isTruthy(evaluate(stmt.condition))) {
-        // execute(stmt.thenBranch);
-        // } else if (stmt.elseBranch != null) {
-        // execute(stmt.elseBranch);
-        // }
         int i = 0;
         for (Expr condition : stmt.conditions) {
             if (isTruth(evaluate(condition))) {
@@ -94,7 +90,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-
+    // this function implements the case statement it checks which condition matches with given expression and implements the branch statements corresponding it
     @Override
     public Void visitCaseStmt(Stmt.Case stmt) {
         Object expression = evaluate(stmt.condition);
@@ -231,31 +227,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-
+// this method prints the expression given to and prints according to the colled function(print or puts)
     @Override
     public Void visitPrintStmt(Stmt.Print stmt) {
-        // Object value = evaluate(stmt.expressions);
-        // String string = stringify(value);
-        // String -->Object --> String seems to mess all escape sequence characters
-        // So this is needed
-
-        // String finalString = string.replace("\\n", "\n"); // change this for proper
-        // output
-
-        /*
-         * String[] stringArray = string.split("\n");
-         * System.out.println(stringArray[1]);
-         * int arrayLength = stringArray.length;
-         * int index=0;
-         * while(index<arrayLength-1){
-         * System.out.println(stringArray);
-         * index++;
-         * }
-         */
-
         for (Expr expression : stmt.expressions) {
             Object value = evaluate(expression);
-            String string = value!=null? stringify(value):"\0";
+            String string = value!=null? stringify(value):"\0";//print null character when null is produced
             if (stmt.type) {
                 System.out.println(string);
             } else {
@@ -271,31 +248,20 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       throw new Return(value);
     }
 
-    // @Override
-    // public Void visitPutsStmt(Stmt.Puts stmt) {
-    // for (Expr expression : stmt.expressions) {
-    // Object value = evaluate(expression);
-    // String string = stringify(value);
-    // System.out.println(string);
-    // }
-    // return null;
-    // }
-
     @Override
     public Object visitListExpr(Expr.PrintList expr) {
         return evaluate(expr.right);
     }
-
+    // this method is used for parallel assignments like x,y=y,x or x,y,z=10,20,30
+    // here we first evaluate the rhs and then assign to variables on lhs correspondingly
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
         int index = 0;
-        // System.out.println("asdfgh");
         List<Object> values = new ArrayList<>();
         for (Expr Initializer : stmt.initializer) {
             if (Initializer != null) {
                 Object value = evaluate(Initializer);
                 values.add(value);
-                // System.out.println(value + "aaa");
                 index++;
             }
         }
@@ -567,40 +533,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       return function.call(this, arguments);
     }
 
-    /*
-     * Helper Methods
-     */
-    // private List<Object> rangeDotDot(Object left, Object right) {
-    // if (left instanceof Integer && right instanceof Integer) {
-    // int start = (int) left;
-    // int end = (int) right;
-
-    // List<Object> result = new ArrayList<>();
-    // for (int i = start; i <= end; i++) {
-    // result.add(i);
-    // }
-    // return result;
-    // } else {
-    // // Handle error: Non-integer range boundaries
-    // return null;
-    // }
-    // }
-    // private List<Object> rangeDotDotDot(Object left, Object right) {
-    // if (left instanceof Integer && right instanceof Integer) {
-    // int start = (int) left;
-    // int end = (int) right;
-
-    // List<Object> result = new ArrayList<>();
-    // for (int i = start; i < end; i++) {
-    // result.add(i);
-    // }
-    // return result;
-    // } else {
-    // // Handle error: Non-integer range boundaries
-    // return null;
-    // }
-    // }
-
     private boolean operandDoubleChecker(Object left, Object right) {
         if (left instanceof Double && right instanceof Double)
             return true;
@@ -688,12 +620,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         executeBlock(stmt.statements, new Environment(environment));
         return null;
     }
-
+    //this method returns the value of varible given in coide
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
         return environment.get(expr.name);
     }
-
+    //this method is used to implement 'and' and 'or' operators
     @Override
     public Object visitLogicalExpr(Expr.Logical expr) {
         Object left = evaluate(expr.left);
@@ -708,7 +640,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         return evaluate(expr.right);
     }
-
+    //
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         Object left = (expr.operator.type == EQUAL) ? expr.name.lexeme : environment.get(expr.name);
