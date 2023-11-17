@@ -203,7 +203,7 @@ private Expr call() {
     }
   }
 
-  // Free floating identifiers must be handled `
+  // this nmethod id used for parallel assignment parses variables to one list and target to another list
   private Stmt varDeclaration() {
     List<Token> name = new ArrayList<>();
     while (!match(EQUAL)) {
@@ -211,7 +211,6 @@ private Expr call() {
 
       }
       Token varibleName = consume(IDENTIFIER, "??");
-      // System.out.println(varibleName.lexeme);
       name.add(varibleName);
     }
 
@@ -219,7 +218,6 @@ private Expr call() {
 
     initializer = expressionList();
 
-    // System.out.println(peek().type);
     consume(NEWLINE, "Expect newline after value.");
     if (name.size() != initializer.size()) {
       throw new RuntimeError(null, "insufficient arguments");
@@ -271,7 +269,7 @@ private Expr call() {
   {
     return new Stmt.Next();
   }
-
+// this method implements unless statement , pareses branches and condition and checks else branch
   private Stmt unlessStatement() {
     Expr condition = expression();
     List<Stmt> branch = new ArrayList<>();
@@ -287,49 +285,39 @@ private Expr call() {
     consume(END, "expect end keyword");
     return new Stmt.Unless(condition, branch, elseBranch);
   }
-
+// this method implements if statement, this method parses the tokens into condition,and branches using list 
   private Stmt ifStatement() {
     List<Expr> conditions = new ArrayList<>();
     List<List<Stmt>> branches = new ArrayList<>();
     Expr condition = expression();
-    // System.out.println(peek().type + " hso1");
     if (peek().type == DO) {
-      // should add error handling
+      // throws error when do is accidentally used 
       Ruby.error(peek().line, "syntax error ,unexpected " + peek().type);
     }
-    if (match(THEN)) {
+    if (match(THEN)) {// optional syntax
     }
     advance();
-    // System.out.println(peek().type + " hso1.5");
     conditions.add(condition);
     List<Stmt> branch = statementList();
     branches.add(branch);
-    // System.out.println(peek().type + " hso1.51");
     while (match(ELSIF)) {
-      // System.out.println(peek().type + " hso2");
       Expr Condition = expression();
       conditions.add(Condition);
       if (match(THEN)) {
       }
       advance();
-      // System.out.println(peek().type + " hso2.1");
       List<Stmt> Branch = statementList();
       branches.add(Branch);
-      // System.out.println(peek().type + " hso2.11");
     }
-    // System.out.println(peek().type + " hso3");
     List<Stmt> elseBranch = null;
     if (match(ELSE)) {
-      // System.out.println(peek().type + " hso4");
       advance();
-      // System.out.println(peek().type + " hso4.1");
       elseBranch = statementList();
     }
-    // System.out.println(peek().type + " hso5");
     consume(END, "expect end keyword");
     return new Stmt.If(conditions, branches, elseBranch);
   }
-
+// this method first parses the expression of case and them lists of conditions and branches
   private Stmt caseStatement() {
     List<Expr> conditions = new ArrayList<>();
     List<List<Stmt>> branches = new ArrayList<>();
@@ -402,7 +390,7 @@ private Expr call() {
       return null;
     }
   }
-
+// make list of expressions to be printed and identified whishch statement id calling (print or puts)
   private Stmt printStatement(TokenType token) {
     List<Expr> value = expressionList();
     consume(NEWLINE, "Expect newline after value.");
@@ -485,7 +473,7 @@ private Expr call() {
     consume(END, "Expect 'end' after block.");
     return statements;
   }
-
+//parsing and and or logical operators
   private Expr and() {
     Expr expr = equality();
 
@@ -509,7 +497,7 @@ private Expr call() {
 
     return expr;
   }
-
+// parsing assignment operators
   private Expr assignment() {
     Expr expr = or();
 
