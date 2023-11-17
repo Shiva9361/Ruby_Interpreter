@@ -14,13 +14,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             super(message);
         }
     }
-    //This class extends RunTimeException to throw an exception if we encounter a next statement 
+    //throw a next exception if we encounter a next statement 
     private static class NextException extends RuntimeException {
         NextException(String message) {
             super(message);
         }
     }
-
+/*
+ * The environment field in the interpreter changes as we enter and exit local scopes. 
+ * It tracks the current environment. 
+ * This new globals field holds a fixed reference to the outermost global environment.
+ */
     final Environment globals = new Environment();
     private Environment environment = globals;
 
@@ -70,14 +74,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       RubyFunction function = new RubyFunction(stmt,environment);
       environment.define(stmt.name.lexeme, function);
       return null;
-}
+    }
+    // this function implements the if statement it checks which condition is correct and 
+    //implements the branch statements corresponding it
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
-        // if (isTruthy(evaluate(stmt.condition))) {
-        // execute(stmt.thenBranch);
-        // } else if (stmt.elseBranch != null) {
-        // execute(stmt.elseBranch);
-        // }
         int i = 0;
         for (Expr condition : stmt.conditions) {
             if (isTruth(evaluate(condition))) {
@@ -95,7 +96,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-
+    // this function implements the case statement it checks which condition matches with given expression and
+    // implements the branch statements corresponding it
     @Override
     public Void visitCaseStmt(Stmt.Case stmt) {
         Object expression = evaluate(stmt.condition);
@@ -117,9 +119,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-
+    //this function implements the visit method for while statement
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
+        //as long as the condition is true, it will execute the statements in the while loop's body
         try {
             while (isTruth(evaluate(stmt.condition))) {
                     for (Stmt statement : stmt.body) {
@@ -130,9 +133,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                           break;
                     }
               }
-            }
-           
-            
+            }   
         } catch (BreakException breakException) {
             // handle the break stmt
         }
@@ -141,15 +142,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     }
     //visit method implementation for break statement 
+    @Override
     public Void visitBreakStmt(Stmt.Break stmt) {
         throw new BreakException("Invalid break");
 
     }
     //visit method implementation for next statement
+    @Override
     public Void visitNextStmt(Stmt.Next stmt) {
          throw new NextException("Invalid next");
     }
-
+    //this function implements the visit method for until statement
+    //similar to while it will execute the statements in the body of the until loop until the condition becomes true
+    @Override
     public Void visitUntilStmt(Stmt.Until stmt) {
         while (!isTruth(evaluate(stmt.condition))) {
             for (Stmt statement : stmt.body) {               
@@ -158,7 +163,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-
+    //this method creates a new environment and executes the statements in the body of the loop
     void executeLoop(List<Stmt> body, Environment environment) {
         Environment previous = this.environment;
         try {
@@ -176,7 +181,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
     //visit method implementation for 'loop' statement 
     public Void visitLoopStmt(Stmt.Loop stmt) {
-        
         executeLoop(stmt.body, new Environment(environment));
         return null;
     }
@@ -212,7 +216,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         return null;
     }
-
+    // this method implement unless statement 
     @Override
     public Void visitUnlessStmt(Stmt.Unless stmt) {
         if (!isTruth(evaluate(stmt.condition))) {
@@ -228,31 +232,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-
+// this method prints the expression given to and prints according to the colled function(print or puts)
     @Override
     public Void visitPrintStmt(Stmt.Print stmt) {
-        // Object value = evaluate(stmt.expressions);
-        // String string = stringify(value);
-        // String -->Object --> String seems to mess all escape sequence characters
-        // So this is needed
-
-        // String finalString = string.replace("\\n", "\n"); // change this for proper
-        // output
-
-        /*
-         * String[] stringArray = string.split("\n");
-         * System.out.println(stringArray[1]);
-         * int arrayLength = stringArray.length;
-         * int index=0;
-         * while(index<arrayLength-1){
-         * System.out.println(stringArray);
-         * index++;
-         * }
-         */
-
         for (Expr expression : stmt.expressions) {
             Object value = evaluate(expression);
-            String string = value!=null? stringify(value):"\0";
+            String string = value!=null? stringify(value):"\0";//print null character when null is produced
             if (stmt.type) {
                 System.out.println(string);
             } else {
@@ -267,32 +252,21 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       if (stmt.value != null) value = evaluate(stmt.value);
       throw new Return(value);
     }
-
-    // @Override
-    // public Void visitPutsStmt(Stmt.Puts stmt) {
-    // for (Expr expression : stmt.expressions) {
-    // Object value = evaluate(expression);
-    // String string = stringify(value);
-    // System.out.println(string);
-    // }
-    // return null;
-    // }
-
+    //this method is used to evaluvate the list given to print statement for printing
     @Override
     public Object visitListExpr(Expr.PrintList expr) {
         return evaluate(expr.right);
     }
-
+    // this method is used for parallel assignments like x,y=y,x or x,y,z=10,20,30
+    // here we first evaluate the rhs and then assign to variables on lhs correspondingly
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
         int index = 0;
-        // System.out.println("asdfgh");
         List<Object> values = new ArrayList<>();
         for (Expr Initializer : stmt.initializer) {
             if (Initializer != null) {
                 Object value = evaluate(Initializer);
                 values.add(value);
-                // System.out.println(value + "aaa");
                 index++;
             }
         }
@@ -307,13 +281,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
      * Expressions
      */
     // the token already has the value
+    //this function implements the visit method for range expression
+    //during parsing itself we will decide whether the right value of the operand is inclusive or not depending on the token type
+    //then we will execute the statements in the body of the for loop 
     @Override
     public Object visitRangeExpr(Expr.Range expr) {
         Object left = evaluate(expr.left);
         Object right = evaluate(expr.right);
 
         if (!(left instanceof Integer) || !(right instanceof Integer)) {
-            // Handle error: Non-integer range boundaries
             return null;
         }
 
@@ -533,11 +509,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                     return (int) left % (int) right;
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
-
-            // case DOT_DOT:
-            // return rangeDotDot(left, right);
-            // case DOT_DOT_DOT:
-            // return rangeDotDotDot(left, right);
         }
         // again to satisy jvm
         return null;
@@ -545,6 +516,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     
     @Override
+    /*
+     *First, we evaluate the expression for the callee
+     * this expression is just an identifier that looks up the function by its name.
+     * Then we evaluate each of the argument expressions in order and store the resulting values in a list.
+     */
     public Object visitCallExpr(Expr.Call expr) {
       Object callee = evaluate(expr.callee);
       List<Object> arguments = new ArrayList<>();
@@ -556,6 +532,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             "Can only call functions and classes.");
       }
       RubyCallable function = (RubyCallable)callee;
+      //we check to see if the argument list’s length matches the callable’s arity.
       if (arguments.size() != function.arity()) {
         throw new RuntimeError(expr.paren, "Expected " +
             function.arity() + " arguments but got " +
@@ -563,40 +540,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       }
       return function.call(this, arguments);
     }
-
-    /*
-     * Helper Methods
-     */
-    // private List<Object> rangeDotDot(Object left, Object right) {
-    // if (left instanceof Integer && right instanceof Integer) {
-    // int start = (int) left;
-    // int end = (int) right;
-
-    // List<Object> result = new ArrayList<>();
-    // for (int i = start; i <= end; i++) {
-    // result.add(i);
-    // }
-    // return result;
-    // } else {
-    // // Handle error: Non-integer range boundaries
-    // return null;
-    // }
-    // }
-    // private List<Object> rangeDotDotDot(Object left, Object right) {
-    // if (left instanceof Integer && right instanceof Integer) {
-    // int start = (int) left;
-    // int end = (int) right;
-
-    // List<Object> result = new ArrayList<>();
-    // for (int i = start; i < end; i++) {
-    // result.add(i);
-    // }
-    // return result;
-    // } else {
-    // // Handle error: Non-integer range boundaries
-    // return null;
-    // }
-    // }
 
     private boolean operandDoubleChecker(Object left, Object right) {
         if (left instanceof Double && right instanceof Double)
@@ -617,13 +560,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             return;
         throw new RuntimeError(operator, "Operators must be numbers." + right + left);
     }
-
+    // this method is for unary operator and checks if it operating on numbers else it throws errors
     private void checkNumberOperand(Token operator, Object operand) {
         if (operand instanceof Double || operand instanceof Integer)
             return;
         throw new RuntimeError(operator, "Operand must be a number.");
     }
-
+    //checks the instances of the objects and returns if they are equal are not based on it
     private boolean isEqual(Object a, Object b) {
         if (a == null && b == null)
             return true;
@@ -635,7 +578,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             return (double) (Integer) b == (double) a;
         return a.equals(b);
     }
-
+    //this method is used replicate string as string multiplcation is allowed in ruby
     private String StringReplicator(String str, int count) {
         String str1 = "";
         for (int i = 0; i < count; i++) {
@@ -643,7 +586,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return str1;
     }
-
+    // this is method implements vistor pattern which is used to classify to which expression belongs to
     private Object evaluate(Expr expr) {
         return expr.accept(this);
     }
@@ -656,17 +599,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             return (boolean) object;
         return true;
     }
-
+    // this method is used to convert objects to strings for printing
     private String stringify(Object object) {
         if (object == null)
             return "nil";
         return object.toString();
     }
-
+    // this is method implements vistor pattern which is used to classify to which statement belongs to
     private void execute(Stmt stmt) {
         stmt.accept(this);
     }
-
+    // this methods creates a new scope and executes the statement in block in new scope
     void executeBlock(List<Stmt> statements, Environment environment) {
         Environment previous = this.environment;
         try {
@@ -679,18 +622,18 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             this.environment = previous;
         }
     }
-
+    // this used to call executeBlock as it is must be implemented by vistors pattern
     @Override
     public Void visitBlockStmt(Stmt.Block stmt) {
         executeBlock(stmt.statements, new Environment(environment));
         return null;
     }
-
+    //this method returns the value of varible given in coide
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
         return environment.get(expr.name);
     }
-
+    //this method is used to implement 'and' and 'or' operators
     @Override
     public Object visitLogicalExpr(Expr.Logical expr) {
         Object left = evaluate(expr.left);
@@ -705,15 +648,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         return evaluate(expr.right);
     }
-
+    //this method is used for assigments majorly
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         Object left = (expr.operator.type == EQUAL) ? expr.name.lexeme : environment.get(expr.name);
         Object right = evaluate(expr.value);
         switch (expr.operator.type) {
+ // when operator is equal to it evalute and assign variables example a=(b=(c=5)+2)+10 or a=10 and
+ // return value so we can assign for other varibles
             case EQUAL:
                 environment.define(left.toString(), right);
                 return right;
+            // when +=,-=,*=,/=,%= we evalaute the expression and assign the value obtained on varible which it is used and 
+            //return null 
             case PLUS_EQUAL:
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
