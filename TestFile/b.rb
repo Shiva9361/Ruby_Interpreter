@@ -29,3 +29,19 @@ def a
 end
 
 puts a()
+=begin
+true
+false
+true
+false
+true
+true
+false
+1/21
+2
+3
+5
+8
+13
+1
+=end

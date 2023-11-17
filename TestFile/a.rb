@@ -1,6 +1,6 @@
 # jregiigrope
 puts 16.766%2
-puts 35-(7/9-4*10+16-1)*69.0,"\n",5.1>3.1,5>3,5>3.1,5.1<3.1,5<3,5<3.1,5.1>=3.1,5>=3,5>=3.1,5.1<=3.1,5<=3,5<=3.1,-1>-1.9
+puts 35-(7/9-4*10+16-1)*69.0,5.1>3.1,5>3,5>3.1,5.1<3.1,5<3,5<3.1,5.1>=3.1,5>=3,5>=3.1,5.1<=3.1,5<=3,5<=3.1,-1>-1.9
 print "hello world\n"
 print "hi\na\nshiva\tsasaank\n","\n","bye","\n","soni","\n","ght","\n"
 print "hi\n"
@@ -170,3 +170,111 @@ for b in 1...6
   end
 puts a
 end
+=begin
+Output
+0.7659999999999982
+1760.0
+true
+true
+true
+false
+false
+false
+true
+true
+true
+false
+false
+false
+true
+hello world
+hi
+a
+shiva   sasaank
+
+bye
+soni
+ght
+hi
+-5
+hiry
+55
+akilesh
+mokshith
+8
+1760.0
+hiry
+30
+20
+10
+17 :a value 7 :b value 5 :c value
+30
+10
+21
+20
+40
+20
+hirydcq
+hirydcq hirydcq hirydcq hirydcq hirydcq
+jkljkljkljkl
+10
+11
+12
+
+
+You entered a negative number.
+4
+20
+hj
+hj
+else stream
+I got executed
+0
+2
+1
+70
+80
+90
+100
+50
+250
+4
+4.0
+4.0
+1/4
+200
+69
+hi
+200
+69
+hi
+200
+69
+hi
+200
+69
+hi
+Wear Yellow
+gygygy
+gugugu
+gugugu
+gugugu
+Gggggg
+i
+Gggggg
+i
+Gggggg
+i
+Gggggg
+i
+1
+hi
+2
+hi
+3
+hi
+4
+hi
+5
+hi
+=end

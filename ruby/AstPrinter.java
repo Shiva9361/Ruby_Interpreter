@@ -1,10 +1,10 @@
-package ruby;
-/*
+/*package ruby;
+
  * A printer to see if the syntax tree is being generated 
  * properly
  * has to bee updated constantly with all the methods 
  * when parser in created
- */
+ 
 public class AstPrinter implements Expr.Visitor<String> {
     
     String print(Expr expr){
@@ -12,7 +12,7 @@ public class AstPrinter implements Expr.Visitor<String> {
     }
     /*
      * Now implemeting all the visitor methods
-     */
+     
     // I just like using @Override now lol
     @Override
     public String visitBinaryExpr(Expr.Binary expr){
@@ -37,7 +37,7 @@ public class AstPrinter implements Expr.Visitor<String> {
 
     /*
      * Helper method
-     */
+     
 
     private String parenthesize(String name, Expr... exprs){
         StringBuilder builder = new StringBuilder();
@@ -51,3 +51,4 @@ public class AstPrinter implements Expr.Visitor<String> {
         return builder.toString();
     }
 }
+*/
