@@ -84,6 +84,37 @@
     - learnt how functions can be handled 
     - learnt how a interpreter works in the backend
 
+## **Contibutions**
+1. Sonith : 
+    - print
+    - variable assignment
+    - environment
+    - if, unless, case statements
+    - error handling
+2. Akilesh : 
+    - functions
+    - parser base
+    - error handling
+3. Shivadharshan :
+    - Scanner
+    - Tokens
+    - base Expr
+    - arithmetic operators 
+    - exponent
+    - multiline comment
+    - bug fixes 
+    - error handling
+4. Mokshith and Sasaank :
+    - loop
+    - until
+    - while
+    - for
+        - range
+    - break
+    - next
+    - modulo
+    - error handling
+
 [^1]: variable declaration is not possible in Ruby.
 [^2]: Step uses method of number object and as such has not been implemented
 [^3]: yield statement is not implemented
