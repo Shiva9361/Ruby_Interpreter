@@ -19,7 +19,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             super(message);
         }
     }
-
+/*
+ * The environment field in the interpreter changes as we enter and exit local scopes. 
+ * It tracks the current environment. 
+ * This new globals field holds a fixed reference to the outermost global environment.
+ */
     final Environment globals = new Environment();
     private Environment environment = globals;
 
@@ -511,6 +515,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     
     @Override
+    /*
+     *First, we evaluate the expression for the callee
+     * this expression is just an identifier that looks up the function by its name.
+     * Then we evaluate each of the argument expressions in order and store the resulting values in a list.
+     */
     public Object visitCallExpr(Expr.Call expr) {
       Object callee = evaluate(expr.callee);
       List<Object> arguments = new ArrayList<>();
@@ -522,6 +531,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             "Can only call functions and classes.");
       }
       RubyCallable function = (RubyCallable)callee;
+      //we check to see if the argument list’s length matches the callable’s arity.
       if (arguments.size() != function.arity()) {
         throw new RuntimeError(expr.paren, "Expected " +
             function.arity() + " arguments but got " +
