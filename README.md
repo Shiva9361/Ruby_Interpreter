@@ -1,7 +1,7 @@
 # Ruby_Interpreter
 An barebone ruby interpreter implemented in JAVA
 
-**Dependencies:**  
+## **Dependencies:**  
 1. Java SDK
 
 **Features:**
@@ -23,16 +23,22 @@ An barebone ruby interpreter implemented in JAVA
     1. While Statement
     2. Until Statement
     3. Loop Statement
-    4. For Statement 
+    4. For Statement without step [^2]
 11. Loop Control Statements
     1. Break Statement
     2. Next Statement
-
+12. Functions Without Closures [^3]
 
 **Explanation:**
 
+
+
 **Challenges:**
+
+1. Absence of 
 
 **Learning:**
 
 [^1]: variable declaration is not possible in Ruby.
+[^2]: 
+[^3]:
