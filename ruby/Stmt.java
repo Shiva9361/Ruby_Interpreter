@@ -36,6 +36,8 @@ abstract class Stmt {
 		R visitFunctionStmt(Function stmt);
 
 		R visitReturnStmt(Return stmt);
+
+		R visitNextStmt(Next stmt);
 	}
 
 	static class Case extends Stmt {
@@ -63,7 +65,13 @@ abstract class Stmt {
 			return visitor.visitBreakStmt(this);
 		}
 	}
-
+ 
+	static class Next extends Stmt {
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitNextStmt(this);
+		}
+	}
 	static class Block extends Stmt {
 		Block(List<Stmt> statements) {
 			this.statements = statements;

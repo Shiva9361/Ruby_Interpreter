@@ -1,4 +1,3 @@
-
 # jregiigrope
 puts 16.766%2
 puts 35-(7/9-4*10+16-1)*69.0,"\n",5.1>3.1,5>3,5>3.1,5.1<3.1,5<3,5<3.1,5.1>=3.1,5>=3,5>=3.1,5.1<=3.1,5<=3,5<=3.1,-1>-1.9
@@ -126,20 +125,6 @@ v = 8
 # Ruby program to illustrate 'do..while'loop
 
 # starting of do..while loop
-loop do
-    #  break
- puts "GeeksforGeeks"
-  s = 7
- val = 7
-#   break
- # using boolean expressions
- if val == 7
-    puts "i"
-    break
- end
-
-# ending of ruby do..while loop
-end
 #puts s
 puts 2**2,2**2.0,2.0**2.0,2**-2
 # break
@@ -153,9 +138,9 @@ il =200
  break
  end
 end
-puts il
+# puts il
 # break
-puts il
+# puts il
 
 day = 3
 
@@ -173,26 +158,32 @@ when 3
 else
   puts "Wear Any color"
 end
-
-str = "two"
-  
-# using case statement 
-case str  
-  
-# using when 
-when "one"  
-  puts 'Input is 1'
-  
-when "two"  
-  puts 'Input is 2'
-  
-when "three"  
-  puts 'Input is 3'
-  
- when "four"  
-  puts 'Input is 4'
-  
-else  
-  puts "Default!"
-  
-end  
+i111=1
+while i111<5
+  i111=i111+1
+   if i111==2
+    puts "gygygy"
+   next
+end
+puts "gugugu"
+end
+s = 7
+val = 7
+loop do
+puts "GeeksforGeeks"
+if val == 10
+  puts "i"
+  break
+end
+puts "i"
+val=val+1
+end
+a=4
+for b in 1...6
+  puts b
+  if a==4
+    puts "hi"
+    next
+  end
+puts a
+end

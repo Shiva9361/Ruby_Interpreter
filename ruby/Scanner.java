@@ -59,6 +59,7 @@ public class Scanner {
         keywords.put("loop", LOOP);
         keywords.put("until", UNTIL);
         keywords.put("break", BREAK);
+        keywords.put("redo", REDO);
         // keywords.put("yield");
 
     }

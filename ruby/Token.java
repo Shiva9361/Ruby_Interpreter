@@ -24,7 +24,7 @@ enum TokenType {
     // Keywords
     IF, ELSE, ELSIF, UNLESS, WHILE, FOR, LOOP, DO, END, DEF, CLASS, MODULE,
     RETURN, BREAK, NEXT, NIL, TRUE, FALSE, SUPER, SELF, CASE, WHEN, BEGIN,
-    RESCUE, ENSURE, RETRY, NOT, AND, OR, IN, THEN, UNTIL,
+    RESCUE, ENSURE, RETRY, NOT, AND, OR, IN, THEN, UNTIL, REDO,
 
     NEWLINE, // We need newline in ruby parsing
     PRINT, PUTS,
