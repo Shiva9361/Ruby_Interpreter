@@ -5,7 +5,6 @@ import static ruby.TokenType.EQUAL;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
-//import ruby.Expr.Variable;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private static class BreakException extends RuntimeException {
@@ -26,21 +25,22 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
  */
     final Environment globals = new Environment();
     private Environment environment = globals;
-
+    // Constructor
     Interpreter() {
         globals.define("clock", new RubyCallable() {
-          @Override
-          public int arity() { return 0; }
-  @Override
-          public Object call(Interpreter interpreter,
-                             List<Object> arguments) {
-            return (double)System.currentTimeMillis() / 1000.0;
-          }
-  @Override
-          public String toString() { return "<native fn>"; }
-        });
-      }
-
+            @Override
+            public int arity() { return 0; }
+            @Override
+            public Object call(Interpreter interpreter,List<Object> arguments) {
+                return (double)System.currentTimeMillis() / 1000.0;
+            }
+            @Override
+                public String toString() { return "<native fn>"; }
+            });
+    }
+    /*
+     * main interpret method
+     */
     void interpret(List<Stmt> statements) {
         try {
             for (Stmt statement : statements) {
@@ -60,7 +60,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     /*
-     * Statements
+     * Statements implemented by visitor
      */
     @Override
     public Void visitExpressionStmt(Stmt.Expression stmt) {
@@ -118,7 +118,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-
+    // visitor implementation of while statement
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
         try {
@@ -135,7 +135,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
            
             
         } catch (BreakException breakException) {
-            // handle the break stmt
+            // do nothing just exit
         }
        
         return null;
@@ -194,7 +194,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                // environment.define(left.toString(), right);
                // System.out.println(element);
                 // Create a new environment for the loop iteration
-                 environment.define(stmt.variable.lexeme, element);
+                environment.define(stmt.variable.lexeme, element);
 
                 // Execute the loop body with the new environment
                 // execute(stmt.body);
@@ -208,11 +208,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 }
             }
         } else {
-            // Handle error: Non-iterable in the for loop
+            Ruby.runtimeError(new RuntimeError("Cannot have a non iteratable in for loop"));
         }}
         catch(BreakException breakException)
         {
-            // have to add
+            // do nothing
         }
 
         return null;
@@ -303,17 +303,22 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         return result;
     }
-
+    /*
+     * implementing visitor methods
+     */
+    // Literal - just return the value
     @Override
     public Object visitLiteralExpr(Expr.Literal expr) {
         return expr.value;
     }
-
+    // Grouping expression - evalute the expression and 
+    // return the result
     @Override
     public Object visitGroupingExpr(Expr.Grouping expr) {
         return evaluate(expr.expression);
     }
-
+    // Evaluate the operand to a single value first
+    // then depending on the operator return the expected value
     @Override
     public Object visitUnaryExpr(Expr.Unary expr) {
         Object right = evaluate(expr.right);
@@ -330,14 +335,27 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         // just to satisfy the jvm
         return null;
     }
-
+    // Evalute the left and right 
+    // Now evaluate the expression based on the operator
     @Override
     public Object visitBinaryExpr(Expr.Binary expr) {
         Object left = evaluate(expr.left);
         Object right = evaluate(expr.right);
-
+        /*
+         * In comparisons and operators like exponent +, and *
+         * Multiple types have differnt differnt stuff to be done
+         * Therefore checking the type and also type casting as what we 
+         * have is type object
+         * 
+         * Object that is a instance of Integer, needs to be explicity type casted
+         * to Integer and only then we can cast it to double
+         */
         switch (expr.operator.type) {
             // Exponent
+            /*
+             * In each place checking if operands are just numbers
+             * for all the operators that only work on numbers
+             */
             case STAR_STAR:
                 checkNumberOperands(expr.operator, left, right);
                 if (operandDoubleChecker(left, right)) {
@@ -424,7 +442,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                     return true ? ((String) left).compareTo((String) right) <= 0 : false;
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
-
+            /*
+             * Just return if it is equal or not equal 
+             */
             case BANG_EQUAL:
                 return !isEqual(left, right);
             case EQUAL_EQUAL:
@@ -539,7 +559,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       }
       return function.call(this, arguments);
     }
-
+    /*
+     * Method to check if any of the number operands are double
+     * if yes we need to typecast
+     */
     private boolean operandDoubleChecker(Object left, Object right) {
         if (left instanceof Double && right instanceof Double)
             return true;
@@ -553,7 +576,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return false;
     }
-
+    /*
+     * Check if the operands are numbers
+     * throw error if not
+     */
     private void checkNumberOperands(Token operator, Object left, Object right) {
         if (operandDoubleChecker(left, right) || left instanceof Integer && right instanceof Integer)
             return;
