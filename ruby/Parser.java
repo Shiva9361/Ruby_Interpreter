@@ -40,11 +40,11 @@ public class Parser {
   /*
    * Using the recursive decent parsing style.
    */
-
+  // to call  assignment
   private Expr expression() {
     return assignment();
   }
-
+  // this method generates the list of expression from tokens to be printed
   private List<Expr> expressionList() {
     List<Expr> exprs = new ArrayList<>();
     Expr expr = expression();
@@ -231,7 +231,7 @@ public class Parser {
   }
 
   /*
-   * Statements
+   * to classify which type declaration it is or is it a statement
    */
   private Stmt declaration() {
     try {
@@ -300,11 +300,11 @@ public class Parser {
     }
     return expressionStatement();
   }
-
+  //parsing break statement
   private Stmt breakStatement() {
     return new Stmt.Break();
   }
-
+  //parsing break statement
   private Stmt nextStatement()
   {
     return new Stmt.Next();
@@ -343,7 +343,7 @@ public class Parser {
     while (match(ELSIF)) {
       Expr Condition = expression();
       conditions.add(Condition);
-      if (match(THEN)) {
+      if (match(THEN)) {//optional  syntax
       }
       advance();
       List<Stmt> Branch = statementList();
@@ -357,7 +357,7 @@ public class Parser {
     consume(END, "expect end keyword");
     return new Stmt.If(conditions, branches, elseBranch);
   }
-// this method first parses the expression of case and them lists of conditions and branches
+// this method first parses the expression of case and then lists of conditions and branches
   private Stmt caseStatement() {
     List<Expr> conditions = new ArrayList<>();
     List<List<Stmt>> branches = new ArrayList<>();
@@ -389,14 +389,22 @@ public class Parser {
     consume(END, "expect end keyword");
     return new Stmt.Case(condition, conditions, branches, elseBranch);
   }
-
+  //this method parses the while loop
+  //first it parses the condition recursive decently
+  //gets a list of statements of the body
+  //then creates a while statement
+  //throws parsing error in case of syntax error
   private Stmt whileStatement() {
     Expr condition = expression();
     List<Stmt> body = statementList();
     consume(END, "expect end keyword");
     return new Stmt.While(condition, body);
   }
-
+  //this method parses the until loop
+  //first it parses the condition recursive decently
+  //gets a list of statements of the body
+  //then creates an until statement
+  //throws parsing error in case of syntax error
   private Stmt untilStatement() {
     Expr condition = expression();
     consume(DO, "expect do keyword");
@@ -404,14 +412,22 @@ public class Parser {
     consume(END, "expect end keyword");
     return new Stmt.Until(condition, body);
   }
-
+  //this method parses the while loop
+  //it gets a list of statements of the body
+  //then creates a loop statement
+  //throws parsing error in case of syntax error
   private Stmt loopStatement() {
     consume(DO, "expect do keyword");
     List<Stmt> body = statementList();
     consume(END, "expect end keyword");
     return new Stmt.Loop(body);
   }
-
+  //this method parses the for loop
+  //first it identifies the variable
+  //it recursive decently parses the iterable expression
+  //it gets a list of statements of the body
+  //then creates a for statement
+  //throws parsing error in case of syntax error
   private Stmt forStatement() {
     try {
       if (match(IDENTIFIER)) {
@@ -479,7 +495,7 @@ public class Parser {
   
     return new Stmt.Function(name, parameters, body);
   }
-  
+  //this method creates a new block
   private List<Stmt> block() {
     List<Stmt> statements = new ArrayList<>();
 
