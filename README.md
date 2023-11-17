@@ -40,8 +40,14 @@ An barebone Ruby Interpreter implemented in JAVA
 
 ## **Explanation:**
 
-:warning: This is a high level explanation, for further details, check the code for comments :warning:
-First, we read the file or the data fed into the interpreter
+:warning: This is a high level explanation, for further details, check the code for comments :warning: 
+
+
+First, we read the file or the data fed into the interpreter, now this data is passed to the scanner 
+
+The raw source file is now tokenized in the scanner, The scanner returns a list of tokens \
+The tokens are now passed to the parser, The parser reads the tokens, and sytematically builds a syntax tree \ 
+from the 
 
 
 ## **Challenges:**
