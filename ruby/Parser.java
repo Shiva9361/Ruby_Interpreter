@@ -175,33 +175,32 @@ public class Parser {
     return call();
   }
 
-// Upper Limit Of Arguments is 255
-private Expr finishCall(Expr callee) {
-  List<Expr> arguments = new ArrayList<>();
-  if (!check(RIGHT_PAREN)) {
-    do {
-      // if (arguments.size() >= 255) {
-      //   error(peek(), "Can't have more than 255 arguments.");
-      // }
-      arguments.add(expression());
-    } while (match(COMMA));
+/*
+ * Function to 
+ */
+  private Expr finishCall(Expr callee) {
+    List<Expr> arguments = new ArrayList<>();
+    if (!check(RIGHT_PAREN)) {
+      do {
+        arguments.add(expression());
+      } while (match(COMMA));
+    }
+    Token paren = consume(RIGHT_PAREN,"Expect ')' after arguments.");
+    return new Expr.Call(callee, paren, arguments);
   }
-  Token paren = consume(RIGHT_PAREN,"Expect ')' after arguments.");
-  return new Expr.Call(callee, paren, arguments);
-}
 
 
-private Expr call() {
-  Expr expr = primary();
-  while (true) {
-    if (match(LEFT_PAREN)) {
-      expr = finishCall(expr);
-    } else {
-      break;
-    } 
+  private Expr call() {
+    Expr expr = primary();
+    while (true) {
+      if (match(LEFT_PAREN)) {
+        expr = finishCall(expr);
+      } else {
+        break;
+      } 
+    }
+    return expr;
   }
-  return expr;
-}
   /*
    * leaf node of recursive decent
    */
@@ -485,6 +484,12 @@ private Expr call() {
       return new Stmt.Function(name, parameters, body);
   }
   */
+
+  /*
+   * When we encounter def keyword, we call function. 
+   * That corresponds to the function grammar rule 
+   */
+
   private Stmt.Function function(String kind) {
     List<Token> parameters = new ArrayList<>();
     Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
