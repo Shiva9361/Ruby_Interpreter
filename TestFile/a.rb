@@ -153,7 +153,7 @@ end
 s = 7
 val = 7
 loop do
-puts "GeeksforGeeks"
+puts "Gggggg"
 if val == 10
   puts "i"
   break
