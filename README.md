@@ -4,7 +4,7 @@ An barebone ruby interpreter implemented in JAVA
 ## **Dependencies:**  
 1. Java SDK
 
-**Features:**
+## **Features:**
 1. Arithmetic Expression Evaluation
 2. Arithmetic Operators
 3. Variable Assignment [^1]
@@ -29,15 +29,15 @@ An barebone ruby interpreter implemented in JAVA
     2. Next Statement
 12. Functions Without Closures [^3]
 
-**Explanation:**
+## **Explanation:**
 
 
 
-**Challenges:**
+## **Challenges:**
 
-1. Absence of 
+1. Absence of semilcolon
 
-**Learning:**
+## **Learning:**
 
 [^1]: variable declaration is not possible in Ruby.
 [^2]: 
