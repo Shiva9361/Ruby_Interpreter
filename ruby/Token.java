@@ -1,6 +1,9 @@
 package ruby;
 
 //An enum type is a special data type that enables for a variable to be a set of predefined constants.
+/*
+ * We added a large number of tokens, Out of which we tried to implement most 
+ */
 enum TokenType {
 
     // Single char tokens
@@ -28,25 +31,33 @@ enum TokenType {
 
     NEWLINE, // We need newline in ruby parsing
     PRINT, PUTS,
-    BEGIN_C, END_C, // Both capital and small beg
+    BEGIN_C, END_C, // Both capital and small begin
     DOT_DOT_DOT, DOT_DOT, // For forLoop 
     EOF
 
 }
-
+/*
+ * The main token class 
+ */
 public class Token {
     final TokenType type;
     final String lexeme;
     final Object literal;
     final int line;
-
+    /*
+     * Paramaterized constructor for Token, stores the type from enum
+     * lexeme, the literal object and the line number
+     */
     Token(TokenType type, String lexeme, Object literal, int line) {
         this.type = type;
         this.lexeme = lexeme;
         this.literal = literal;
         this.line = line;
     }
-
+    /*
+     * Method to print Token for debugging purposes 
+     * returns the needed data as a string
+     */
     public String toString() {
         return type + " " + lexeme + " " + literal;
     }
