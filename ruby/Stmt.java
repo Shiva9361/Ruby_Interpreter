@@ -1,10 +1,6 @@
 package ruby;
 
-import static ruby.TokenType.PUTS;
-
 import java.util.List;
-import java.util.function.Function;
-
 // abstract class for implementing different types statements in ruby AST.
 abstract class Stmt {
     // interface visitor for implementing visitors pattern.

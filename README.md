@@ -11,8 +11,10 @@
         - Addition with String Concatination (+) 
         - Subtraction (-)
         - Multiplication with String Replication (*)
+        - Division with floating point and integer(/) 
         - Exponentiation (**) 
     - Logical Operators
+        - 
 3. Variable Assignment [^1]
 4. Parallel Assignment **(a=b=1)**
 5. Print Statement
@@ -40,7 +42,7 @@
 
 ## **Explanation:**
 
-:warning: *This is a high level explanation, for further details, check the code for comments* :warning: 
+:warning: *This is a abstract explanation, for further details, check the code for comments* :warning: 
 
 
 *First, we read the file or the data fed into the interpreter, now this data is passed to the scanner*
