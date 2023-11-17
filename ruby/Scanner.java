@@ -10,23 +10,20 @@ public class Scanner {
 
     private static final Map<String, TokenType> keywords;
     /*
-     * Creating a map for all keywods found in ruby
+     * Creating a map for all keywods found in ruby that we are implenenting
      * If a keyword is encountered, It is added to the token
      * instead of setting as identifier
-     * Helper Functions from line 189
      */
     static {
         keywords = new HashMap<>();
         keywords.put("BEGIN", BEGIN_C);
         keywords.put("END", END_C);
-        // keywords.put("alias",);
         keywords.put("and", AND);
         keywords.put("begin", BEGIN);
         keywords.put("break", BREAK);
         keywords.put("case", CASE);
         keywords.put("class", CLASS);
         keywords.put("def", DEF);
-        // keywords.put("defined?");
         keywords.put("do", DO);
         keywords.put("else", ELSE);
         keywords.put("elsif", ELSIF);
@@ -41,7 +38,6 @@ public class Scanner {
         keywords.put("nil", NIL);
         keywords.put("not", NOT);
         keywords.put("or", OR);
-        // keywords.put("redo",);
         keywords.put("rescue", RESCUE);
         keywords.put("retry", RETRY);
         keywords.put("return", RETURN);
@@ -49,9 +45,7 @@ public class Scanner {
         keywords.put("super", SUPER);
         keywords.put("then", THEN);
         keywords.put("true", TRUE);
-        // keywords.put("undef",);
         keywords.put("unless", UNLESS);
-        // keywords.put("until",);
         keywords.put("when", WHEN);
         keywords.put("while", WHILE);
         keywords.put("print", PRINT);
@@ -77,25 +71,33 @@ public class Scanner {
     private int line = 1;
 
     // Parameterized constructor
+    /*
+     * Scanner reads a source file or line
+     */
     Scanner(String source) {
         this.source = source;
     }
 
     List<Token> scanTokens() {
         while (!isAtEnd()) {
-            // beg of next lex
+            // beginning of next lex
+            // After geerating one token, change start to current
+            // Which is the start of next lexeme
             start = current;
             scanToken();
         }
         // adding EOF to the arraylist of tokens by creating a new Token object
+        // So the last token will be EOF
         tokens.add(new Token(EOF, "", null, line));
-        return tokens;
+        return tokens; // Tokens is returned for the parser to run
     }
 
     // Recognizing Lexemes
     private void scanToken() {
         char c = advance();
-
+        /*
+         * The switch case creates token based on lexeme encountered
+         */
         switch (c) {
             case '(':
                 addToken(LEFT_PAREN);
@@ -226,7 +228,6 @@ public class Scanner {
                 line++; // Consuming the newline too
 
                 // Ignoring all kinds of white spaces
-                // Come back to this when you need to change
             case ' ':
             case '\r':
             case '\t':
@@ -250,6 +251,9 @@ public class Scanner {
                 number();
                 break;
             // String
+            /*
+             * Both "s", 's' are strings in ruby
+             */
             case '"':
                 string();
                 break;
@@ -258,14 +262,14 @@ public class Scanner {
                 break;
 
             /*
-             * a reserved word is an identifier, it’s just one that has been claimed by
-             * the language for its own use. That’s where the term reserved word comes from.
+             * In default we are checking for identifiers
              */
             default:
                 if (isAlpha(c)) {
                     identifier();
                     break;
                 }
+                // if it is not a charcater that we know, throw error
                 Ruby.error(line, "Unexpected Character");
                 break;
         }
@@ -274,7 +278,7 @@ public class Scanner {
     /*
      * Helper Functions
      */
-
+    // Check if it is at end
     private boolean isAtEnd() {
         return current >= source.length();
     }
@@ -284,16 +288,20 @@ public class Scanner {
         current++;
         return source.charAt(current - 1);
     }
-
+    /*
+     * Operator overloading
+     */
+    // Adds the token with null object
     private void addToken(TokenType type) {
         addToken(type, null);
     }
-
+    // Adds token with object
     private void addToken(TokenType type, Object literal) {
         String text = source.substring(start, current);
         tokens.add(new Token(type, text, literal, line));
     }
-
+    // If we find the charater we want, Then increment
+    // Else don't
     private boolean match(char expected) {
 
         // Current is already increamented when advance is called
@@ -314,7 +322,9 @@ public class Scanner {
             return '\0';
         return source.charAt(current);
     }
-
+    /*
+     * Method to generate string tokens
+     */
     private void string() {
         /*
          * Ruby supports multiline strings...
@@ -348,6 +358,9 @@ public class Scanner {
         // System.out.println(value+"scanner");
         addToken(STRING, value);
     }
+    /*
+     * String with single quotes 
+     */
     private void string2() {
         /*
          * Ruby supports multiline strings...
@@ -381,16 +394,23 @@ public class Scanner {
         // System.out.println(value+"scanner");
         addToken(STRING, value);
     }
-
+    /*
+     * method to check if it is number
+     */
     private boolean isDigit(char c) {
         return c >= '0' && c <= '9';
     }
-
+    /*
+     * method to peek 2 chararacters forward
+     */
     private char peekNext() {
         if (current + 1 >= source.length())
             return '\0';
         return source.charAt(current + 1);
     }
+    /*
+     * Method to check for multiline commments
+     */
     private boolean iscomment(){
         int extra = 0;
         while (isAlpha(peek())){
@@ -425,7 +445,9 @@ public class Scanner {
         }
         return false;
     }
-
+    /*
+     * Method to get generate token for number
+     */
     private void number() {
         boolean isFloat = false;
         while (isDigit(peek()))
@@ -452,7 +474,8 @@ public class Scanner {
     }
 
     // after we scan an identifier, we check to see if it matches anything in the
-    // map
+    // map if it does then we add a keyword token 
+    // else indentifier
     
     private void identifier() {
         while (isAlphanumeric(peek()))
@@ -463,13 +486,17 @@ public class Scanner {
             type = IDENTIFIER;
         addToken(type);
     }
-
+    /*
+     * method to check for alphabets and _
+     */
     private boolean isAlpha(char c) {
         return (c >= 'a' && c <= 'z') ||
                 (c >= 'A' && c <= 'Z') ||
                 c == '_' || c == '$';
     }
-
+    /*
+     * method to check for alphabets and numeric together
+     */
     private boolean isAlphanumeric(char c) {
         return isAlpha(c) || isDigit(c);
     }
