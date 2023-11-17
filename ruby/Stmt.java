@@ -5,7 +5,9 @@ import static ruby.TokenType.PUTS;
 import java.util.List;
 import java.util.function.Function;
 
+// abstract class for implementing different types statements in ruby AST.
 abstract class Stmt {
+    // interface visitor for implementing visitors pattern.
 	interface Visitor<R> {
 		R visitBlockStmt(Block stmt);
 
@@ -16,8 +18,6 @@ abstract class Stmt {
 		R visitPrintStmt(Print stmt);
 
 		R visitVarStmt(Var stmt);
-
-		// R visitPutsStmt(Puts stmt);
 
 		R visitUnlessStmt(Unless stmt);
 
@@ -39,7 +39,7 @@ abstract class Stmt {
 
 		R visitNextStmt(Next stmt);
 	}
-
+    // case statement implementation
 	static class Case extends Stmt {
 		Case(Expr condition, List<Expr> conditions, List<List<Stmt>> branches, List<Stmt> elseBranch) {
 			this.condition = condition;
@@ -58,20 +58,21 @@ abstract class Stmt {
 		final List<List<Stmt>> branches;
 		final List<Stmt> elseBranch;
 	}
-
+    // break statement implementation
 	static class Break extends Stmt {
 		@Override
 		<R> R accept(Visitor<R> visitor) {
 			return visitor.visitBreakStmt(this);
 		}
 	}
- 
+    // next statement implementation
 	static class Next extends Stmt {
 		@Override
 		<R> R accept(Visitor<R> visitor) {
 			return visitor.visitNextStmt(this);
 		}
 	}
+    // block statement implementation
 	static class Block extends Stmt {
 		Block(List<Stmt> statements) {
 			this.statements = statements;
@@ -84,7 +85,7 @@ abstract class Stmt {
 
 		final List<Stmt> statements;
 	}
-
+    // expression statement implementation
 	static class Expression extends Stmt {
 		Expression(Expr expression) {
 			this.expression = expression;
@@ -97,7 +98,7 @@ abstract class Stmt {
 
 		final Expr expression;
 	}
-
+    // if statement implementation
 	static class If extends Stmt {
 		If(List<Expr> conditions, List<List<Stmt>> branches, List<Stmt> elseBranch) {
 			this.conditions = conditions;
@@ -114,7 +115,7 @@ abstract class Stmt {
 		final List<List<Stmt>> branches;
 		final List<Stmt> elseBranch;
 	}
-
+    // while statement implementation
 	static class While extends Stmt {
 		While(Expr condition, List<Stmt> body) {
 			this.condition = condition;
@@ -129,7 +130,7 @@ abstract class Stmt {
 		final Expr condition;
 		final List<Stmt> body;
 	}
-
+    // until statement implementation
 	static class Until extends Stmt {
 		Until(Expr condition, List<Stmt> body) {
 			this.condition = condition;
@@ -144,7 +145,7 @@ abstract class Stmt {
 		final Expr condition;
 		final List<Stmt> body;
 	}
-
+    // loop statement implementation
 	static class Loop extends Stmt {
 		Loop(List<Stmt> body) {
 			this.body = body;
@@ -157,8 +158,8 @@ abstract class Stmt {
 
 		final List<Stmt> body;
 	}
-
-	public static class For extends Stmt {
+     // for statement implementation
+	 static class For extends Stmt {
 		public final Token variable;
 		public final Expr iterable;
 		public final List<Stmt> body;
@@ -174,7 +175,7 @@ abstract class Stmt {
 			return visitor.visitForStmt(this);
 		}
 	}
-
+    // unless statement implementation
 	static class Unless extends Stmt {
 		Unless(Expr condition, List<Stmt> branch, List<Stmt> elseBranch) {
 			this.condition = condition;
@@ -191,7 +192,7 @@ abstract class Stmt {
 		final List<Stmt> branch;
 		final List<Stmt> elseBranch;
 	}
-
+    // function statement implementation
 	static class Function extends Stmt {
 		Function(Token name, List<Token> params, List<Stmt> body) {
 			this.name = name;
@@ -207,7 +208,7 @@ abstract class Stmt {
 		final List<Token> params;
 		final List<Stmt> body;
 	}
-
+    // print statement implementation
 	static class Print extends Stmt {
 		Print(List<Expr> expressions, boolean type) {
 			this.expressions = expressions;
@@ -222,7 +223,7 @@ abstract class Stmt {
 		final List<Expr> expressions;
 		final boolean type;
 	}
-
+    // return statement implementation
 	static class Return extends Stmt {
 		Return(Token keyword, Expr value) {
 			this.keyword = keyword;
@@ -236,20 +237,7 @@ abstract class Stmt {
 		final Token keyword;
 		final Expr value;
 	}
-
-	// static class Puts extends Stmt {
-	// Puts(List<Expr> expressions) {
-	// this.expressions = expressions;
-	// }
-
-	// @Override
-	// <R> R accept(Visitor<R> visitor) {
-	// return visitor.visitPutsStmt(this);
-	// }
-
-	// final List<Expr> expressions;
-	// }
-
+    // variable statement implementation
 	static class Var extends Stmt {
 		Var(List<Token> name, List<Expr> initializer) {
 			this.name = name;

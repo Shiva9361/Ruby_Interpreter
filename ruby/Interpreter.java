@@ -8,6 +8,7 @@ import java.lang.Math;
 //import ruby.Expr.Variable;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+    //This class extends RunTimeException to throw an exception if we encounter a break statement 
     private static class BreakException extends RuntimeException {
         BreakException(String message) {
             super(message);
@@ -160,7 +161,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     void executeLoop(List<Stmt> body, Environment environment) {
         Environment previous = this.environment;
-        //System.out.println("changed to new");
         try {
             this.environment = environment;
             while (true) {
@@ -172,7 +172,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             // handle the break stmt
         } finally {
             this.environment = previous;
-            //System.out.println("changed to previous");
         }
     }
     //visit method implementation for 'loop' statement 
@@ -181,25 +180,23 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         executeLoop(stmt.body, new Environment(environment));
         return null;
     }
-
+    // visit method for for statement
     @Override
     public Void visitForStmt(Stmt.For stmt) {
         try{
+        // eveluating iterable expression to get the values to iterate over
         Object iterableValue = evaluate(stmt.iterable);
 
         if (iterableValue instanceof Iterable<?>) {
             for (Object element : (Iterable<?>) iterableValue) {
-               // environment.define(left.toString(), right);
-               // System.out.println(element);
-                // Create a new environment for the loop iteration
+                 // defining the loop variable in its scope
                  environment.define(stmt.variable.lexeme, element);
-
-                // Execute the loop body with the new environment
-                // execute(stmt.body);
+                // executing the for each loop statement
                 for (Stmt statement : stmt.body) {
                    try{
                         execute(statement);
                     }
+                    // implementation of next statement 
                      catch (NextException nextException){
                           break;
                     }
@@ -210,7 +207,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }}
         catch(BreakException breakException)
         {
-            // have to add
+            // Handle the break exception
         }
 
         return null;
