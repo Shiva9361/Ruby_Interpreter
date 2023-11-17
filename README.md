@@ -58,11 +58,12 @@
 
 1. Absence of semicolon
 2. Parallel Assignment
-3. Scope issues
+3. Scope issues [^4]
 4. Closure issues
 5. 0 arguments passing in functions
 6. too much alternatives to do the same thing in Ruby
 7. Exponent with negative power
+8. figuring out how to implement an iterator for 'for' loop
 
 ## **Learning:**
 
@@ -74,7 +75,6 @@
     - learnt to generate parse tree
     - learnt how the type data of one language can be implemented in another language that is interpreting it
     - learnt to implement operator precedence
-
 3. Interpretation
     - learnt to use visitor pattern
     - learnt how functions can be handled 
@@ -83,3 +83,4 @@
 [^1]: variable declaration is not possible in Ruby.
 [^2]: Step uses method of number object and as such has not been implemented
 [^3]: yield statement is not implemented
+[^4]: control flow statements like break and next
