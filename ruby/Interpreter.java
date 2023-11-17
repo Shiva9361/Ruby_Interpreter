@@ -70,7 +70,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       environment.define(stmt.name.lexeme, function);
       return null;
     }
-    // this function implements the if statement it checks which condition is correct and implements the branch statements corresponding it
+    // this function implements the if statement it checks which condition is correct and 
+    //implements the branch statements corresponding it
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
         int i = 0;
@@ -90,7 +91,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return null;
     }
-    // this function implements the case statement it checks which condition matches with given expression and implements the branch statements corresponding it
+    // this function implements the case statement it checks which condition matches with given expression and
+    // implements the branch statements corresponding it
     @Override
     public Void visitCaseStmt(Stmt.Case stmt) {
         Object expression = evaluate(stmt.condition);
@@ -211,7 +213,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         return null;
     }
-
+    // this method implement unless statement 
     @Override
     public Void visitUnlessStmt(Stmt.Unless stmt) {
         if (!isTruth(evaluate(stmt.condition))) {
@@ -247,7 +249,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       if (stmt.value != null) value = evaluate(stmt.value);
       throw new Return(value);
     }
-
+    //this method is used to evaluvate the list given to print statement for printing
     @Override
     public Object visitListExpr(Expr.PrintList expr) {
         return evaluate(expr.right);
@@ -502,11 +504,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                     return (int) left % (int) right;
                 }
                 throw new RuntimeError(expr.operator, "Operands must be two int/f or two strings.");
-
-            // case DOT_DOT:
-            // return rangeDotDot(left, right);
-            // case DOT_DOT_DOT:
-            // return rangeDotDotDot(left, right);
         }
         // again to satisy jvm
         return null;
@@ -552,13 +549,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             return;
         throw new RuntimeError(operator, "Operators must be numbers." + right + left);
     }
-
+    // this method is for unary operator and checks if it operating on numbers else it throws errors
     private void checkNumberOperand(Token operator, Object operand) {
         if (operand instanceof Double || operand instanceof Integer)
             return;
         throw new RuntimeError(operator, "Operand must be a number.");
     }
-
+    //checks the instances of the objects and returns if they are equal are not based on it
     private boolean isEqual(Object a, Object b) {
         if (a == null && b == null)
             return true;
@@ -570,7 +567,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             return (double) (Integer) b == (double) a;
         return a.equals(b);
     }
-
+    //this method is used replicate string as string multiplcation is allowed in ruby
     private String StringReplicator(String str, int count) {
         String str1 = "";
         for (int i = 0; i < count; i++) {
@@ -578,7 +575,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         return str1;
     }
-
+    // this is method implements vistor pattern which is used to classify to which expression belongs to
     private Object evaluate(Expr expr) {
         return expr.accept(this);
     }
@@ -591,17 +588,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             return (boolean) object;
         return true;
     }
-
+    // this method is used to convert objects to strings for printing
     private String stringify(Object object) {
         if (object == null)
             return "nil";
         return object.toString();
     }
-
+    // this is method implements vistor pattern which is used to classify to which statement belongs to
     private void execute(Stmt stmt) {
         stmt.accept(this);
     }
-
+    // this methods creates a new scope and executes the statement in block in new scope
     void executeBlock(List<Stmt> statements, Environment environment) {
         Environment previous = this.environment;
         try {
@@ -614,7 +611,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             this.environment = previous;
         }
     }
-
+    // this used to call executeBlock as it is must be implemented by vistors pattern
     @Override
     public Void visitBlockStmt(Stmt.Block stmt) {
         executeBlock(stmt.statements, new Environment(environment));
@@ -640,15 +637,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         return evaluate(expr.right);
     }
-    //
+    //this method is used for assigments majorly
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         Object left = (expr.operator.type == EQUAL) ? expr.name.lexeme : environment.get(expr.name);
         Object right = evaluate(expr.value);
         switch (expr.operator.type) {
+ // when operator is equal to it evalute and assign variables example a=(b=(c=5)+2)+10 or a=10 and
+ // return value so we can assign for other varibles
             case EQUAL:
                 environment.define(left.toString(), right);
                 return right;
+            // when +=,-=,*=,/=,%= we evalaute the expression and assign the value obtained on varible which it is used and 
+            //return null 
             case PLUS_EQUAL:
                 if (operandDoubleChecker(left, right)) {
                     if (left instanceof Integer) {
