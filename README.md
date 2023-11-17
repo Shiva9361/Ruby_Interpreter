@@ -5,7 +5,7 @@ An barebone ruby interpreter implemented in JAVA
 1. Java SDK
 
 **Features:**
-1. Arithmetic Evaluation
+1. Arithmetic Expression Evaluation
 2. Arithmetic Operators
 3. Variable Assignment [^1]
 4. Parallel Assignment 
@@ -14,7 +14,20 @@ An barebone ruby interpreter implemented in JAVA
 7. Global Variables
 8. Constant Variables
 9. Control Statement
-    1. a
+    1. If Statement
+    2. If-Else Statement
+    3. If-Elsif Statement
+    4. Unless Statement
+    5. Unless-Else Statement
+10. Looping Statements
+    1. While Statement
+    2. Until Statement
+    3. Loop Statement
+    4. For Statement 
+11. Loop Control Statements
+    1. Break Statement
+    2. Next Statement
+
 
 **Explanation:**
 
