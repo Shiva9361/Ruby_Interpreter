@@ -84,7 +84,7 @@
     - learnt how functions can be handled 
     - learnt how a interpreter works in the backend
 
-## **Contibutions**
+## **Contributions**
 1. Sonith : 
     - print
     - variable assignment
